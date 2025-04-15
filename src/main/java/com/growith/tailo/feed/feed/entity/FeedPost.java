@@ -1,12 +1,11 @@
 package com.growith.tailo.feed.feed.entity;
 
+import com.growith.tailo.feed.comment.entity.Comment;
 import com.growith.tailo.member.entity.Member;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.*;
-
-import javax.xml.stream.events.Comment;
 
 @Entity
 @Getter
