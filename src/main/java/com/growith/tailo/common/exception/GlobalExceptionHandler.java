@@ -1,7 +1,6 @@
 package com.growith.tailo.common.exception;
 
-import com.growith.tailo.common.exception.ResourceAlreadyExistException;
-import com.growith.tailo.common.exception.ResourceNotFoundException;
+
 import com.growith.tailo.common.exception.entity.ErrorResponse;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import org.springframework.web.context.request.WebRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     // 404 Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex,
