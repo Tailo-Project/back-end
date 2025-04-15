@@ -1,12 +1,12 @@
-package com.growith.tailo.common.exception.entity;
+package com.growith.tailo.common.exception.dto;
 
 import lombok.Getter;
 
 @Getter
 public class ErrorResponse {
-    private int statusCode;
-    private String message;
-    private String details;
+    private final int statusCode;
+    private final String message;
+    private final String details;
 
     public ErrorResponse(int statusCode, String message, String details) {
         this.statusCode = statusCode;
