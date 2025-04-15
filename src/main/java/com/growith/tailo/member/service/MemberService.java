@@ -1,9 +1,8 @@
 package com.growith.tailo.member.service;
 
-
-
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
+import com.growith.tailo.member.dto.response.KakaoUserInfo;
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.entity.RefreshToken;
@@ -15,7 +14,6 @@ import com.growith.tailo.security.jwt.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,9 +31,10 @@ public class MemberService {
 
         // 소셜 정보 추출
         if ("google".equals(request.provider())) {
-            email = oAuth2Service.validateIdToken(request.accessToken());
-//        } else if ("kakao".equals(request.provider())) {
-//            email = oAuth2Service.getKakaoUserInfo(request.accessToken());
+            email = oAuth2Service.getGoogleUserEmail(request.accessToken());
+        } else if ("kakao".equals(request.provider())) {
+            KakaoUserInfo userInfo = oAuth2Service.getKakaoUserInfo(request.accessToken());
+            email = userInfo.id(); // ← KakaoUserInfo 클래스에 getEmail()이 있어야 함
         } else {
             throw new IllegalArgumentException("지원하지 않는 로그인 방식입니다.");
         }
