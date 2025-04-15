@@ -1,7 +1,7 @@
 package com.growith.tailo.feed.likes.entity;
 
 import com.growith.tailo.feed.feed.entity.FeedPost;
-import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +16,7 @@ public class PostLike {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Member user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "post_id")

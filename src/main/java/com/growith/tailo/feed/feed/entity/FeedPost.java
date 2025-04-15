@@ -1,7 +1,7 @@
 package com.growith.tailo.feed.feed.entity;
 
 import com.growith.tailo.feed.comment.entity.Comment;
-import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.user.entity.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public class FeedPost {
 
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private Member author;
+    private User author;
 
     private String content;
 

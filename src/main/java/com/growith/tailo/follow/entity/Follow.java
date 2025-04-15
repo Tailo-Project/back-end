@@ -1,6 +1,6 @@
 package com.growith.tailo.follow.entity;
 
-import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,11 +15,11 @@ public class Follow {
 
     @ManyToOne
     @JoinColumn(name = "follower_id")
-    private Member follower;
+    private User follower;
 
     @ManyToOne
     @JoinColumn(name = "following_id")
-    private Member following;
+    private User following;
     
     // getters and setters
 }

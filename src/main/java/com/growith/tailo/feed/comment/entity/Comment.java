@@ -1,7 +1,7 @@
 package com.growith.tailo.feed.comment.entity;
 
 import com.growith.tailo.feed.feed.entity.FeedPost;
-import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.user.entity.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.*;
@@ -25,7 +25,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Member user;
+    private User user;
 
     private String content;
 

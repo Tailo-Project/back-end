@@ -1,6 +1,6 @@
 package com.growith.tailo.chat.entity;
 
-import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +15,7 @@ public class ChatMessage {
     
     @ManyToOne
     @JoinColumn(name = "sender_id")
-    private Member sender;
+    private User sender;
 
     @ManyToOne
     @JoinColumn(name = "chat_rooms_id")

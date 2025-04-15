@@ -1,10 +1,10 @@
-package com.growith.tailo.member.entity;
+package com.growith.tailo.user.entity;
 
 import com.growith.tailo.chat.entity.ChatMessage;
 import com.growith.tailo.feed.comment.entity.Comment;
 import com.growith.tailo.follow.entity.Follow;
-import com.growith.tailo.member.enums.GenderType;
-import com.growith.tailo.member.enums.Role;
+import com.growith.tailo.user.enums.GenderType;
+import com.growith.tailo.user.enums.Role;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +15,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "members")
-public class Member {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

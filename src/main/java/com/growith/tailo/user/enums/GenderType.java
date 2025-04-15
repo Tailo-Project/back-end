@@ -1,4 +1,4 @@
-package com.growith.tailo.member.enums;
+package com.growith.tailo.user.enums;
 
 public enum GenderType {
 	MALE("남성"), FEMALE("여성");
