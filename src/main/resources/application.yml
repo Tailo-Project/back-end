@@ -18,3 +18,11 @@ spring:
   sql:
     init:
       mode: never
+  jwt:
+    issuer: ${JWT_ISSUER}
+    secret: ${JWT_SECRET}
+    accessTokenExpirationTime: 3600000
+    refreshTokenExpirationTime: 1209600000
+  google:
+    clientId: ${GOOGLE_CLIENT_ID}
+
