@@ -1,7 +1,8 @@
 package com.growith.tailo.security.jwt;
 
 import com.growith.tailo.member.entity.Member;
-import com.growith.tailo.member.entity.RefreshToken;
+import com.growith.tailo.security.jwt.entity.RefreshToken;
+import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -55,7 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 리프레시 토큰 확인
                 Optional<RefreshToken> refreshTokenValid = refreshTokenRepository.findByAccountId(memberAccountId);
                 // 리프레시 토큰이 존재하고 리프레시 토큰이 유효한 경우
-                if (refreshTokenValid.isPresent()&&this.jwtUtil.validateRefreshToken(refreshTokenValid.get().getToken())){
+                if (refreshTokenValid.isPresent() && this.jwtUtil.validateRefreshToken(refreshTokenValid.get().getToken())){
                     // 새로운 액세스 토큰 생성 로직 진행
                     UserDetails userDetails = this.userDetailService.loadUserByUsername(memberAccountId);
                     String newAccessToken = this.jwtUtil.generateAccessToken((Member) userDetails);
