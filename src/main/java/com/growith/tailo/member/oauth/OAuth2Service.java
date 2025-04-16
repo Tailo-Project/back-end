@@ -1,16 +1,21 @@
 package com.growith.tailo.member.oauth;
 
 
+
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
+
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,7 +26,10 @@ public class OAuth2Service {
 
     private final RestTemplate restTemplate;
 
-    public String getGoogleUserEmail(String idToken) throws Exception {
+
+    public String validateIdToken(String idToken) throws Exception {
+        JWT jwt = JWTParser.parse(idToken);
+
         // 예시로 Google API에서 정보를 가져와 검증
         String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
         String response = restTemplate.getForObject(url, String.class);
@@ -36,6 +44,7 @@ public class OAuth2Service {
         // JSON 파싱 후 email 반환
         return "user@example.com"; // 예시로 반환
     }
+
 
 
     public KakaoUserInfo getKakaoUserInfo(String accessToken) {
