@@ -1,4 +1,4 @@
-package com.growith.tailo.member.entity;
+package com.growith.tailo.security.jwt.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;

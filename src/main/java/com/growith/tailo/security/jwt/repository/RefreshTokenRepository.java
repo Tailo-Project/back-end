@@ -1,6 +1,6 @@
-package com.growith.tailo.security.jwt;
+package com.growith.tailo.security.jwt.repository;
 
-import com.growith.tailo.member.entity.RefreshToken;
+import com.growith.tailo.security.jwt.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

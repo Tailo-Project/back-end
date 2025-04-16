@@ -2,12 +2,15 @@ package com.growith.tailo.member.controller;
 
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
+import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,29 +25,22 @@ public class MemberController {
        LoginResponse loginResponse =  memberService.socialLoginService(request);
         return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
     }
-//    @PostMapping("/auth-login")
-//    public ResponseEntity<?> loginWithGoogle(@RequestBody String accessToken) {
-//        // 구글 API 엔드포인트
-//        String googleApiUrl = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + accessToken;
-//
-//        // 구글 사용자 정보 요청
-//        ResponseEntity<String> response = restTemplate.exchange(
-//                googleApiUrl,
-//                HttpMethod.GET,
-//                null,
-//                String.class
-//        );
-//
-//        // 사용자 정보 받아오기
-//        String userInfo = response.getBody();
-//
-//        // 사용자 정보를 기반으로 추가 로직 (예: JWT 발급 등)
-//        // 예시로 userInfo를 그냥 반환
-//        return ResponseEntity.ok(userInfo);
-//    }
+
     @PostMapping("/auth/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpRequest request){
         String message = memberService.signUpService(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    }
+
+    @GetMapping("/member/duplicate/{accountId}")
+    public ResponseEntity<String> duplicateAccount(@PathVariable String accountId) {
+        memberService.validateAccountId(accountId);
+        return ResponseEntity.ok("사용 가능한 아이디입니다.");
+    }
+
+    @PatchMapping("/member")
+    public ResponseEntity<String> update(@AuthenticationPrincipal Member member, @RequestBody UpdateRequest updateRequest){
+        String message = memberService.updateProfile(member,updateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 }
