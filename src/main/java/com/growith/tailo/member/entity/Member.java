@@ -4,6 +4,7 @@ import com.growith.tailo.chat.entity.ChatMessage;
 import com.growith.tailo.common.entity.BaseTime;
 import com.growith.tailo.feed.comment.entity.Comment;
 import com.growith.tailo.follow.entity.Follow;
+import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.enums.GenderType;
 import com.growith.tailo.member.enums.Role;
 import jakarta.persistence.*;
@@ -104,6 +105,16 @@ public class Member extends BaseTime implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    public void updateProfile(UpdateRequest updateRequest) {
+        this.accountId = updateRequest.accountId();
+        this.nickname = updateRequest.nickname();
+        this.breed = updateRequest.breed();
+        this.type=updateRequest.type();
+        this.address=updateRequest.address();
+        this.age=updateRequest.age();
+        this.gender=updateRequest.gender();
     }
 
     // getters and setters
