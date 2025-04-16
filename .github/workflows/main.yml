@@ -3,14 +3,14 @@ on:
     branches:
       - main
 
-name: Deploy String boot to Amazon EC2
+name: dev-deloy
 env:
   PROJECT_NAME: action_codedeploy
 
 jobs:
   deploy:
     name: DEPLOY
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
