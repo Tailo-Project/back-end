@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.0'
+    id 'org.springframework.boot' version '3.3.1'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -53,7 +53,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON Web Token (JWT) 생성 및 검증을 위한 Jackson 기반 JJWT 구현을 제공
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation  'com.google.auth:google-auth-library-oauth2-http:1.32.1'
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.32.1'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.1.2' // jwt 파싱 하기 위함
 }
 
