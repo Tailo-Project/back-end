@@ -31,7 +31,7 @@ public class Member extends BaseTime implements UserDetails {
     private Long id;
 
     private String email;
-    //@Column(unique = true, nullable = false) 
+    //@Column(unique = true, nullable = false)
     private String accountId;
 
     private String nickname;
