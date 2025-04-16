@@ -1,8 +1,15 @@
 package com.growith.tailo.member.service;
 
+
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
+
+
+
+import com.growith.tailo.member.dto.request.SignUpRequest;
+import com.growith.tailo.member.dto.request.SocialLoginRequest;
+
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.entity.RefreshToken;
@@ -31,6 +38,7 @@ public class MemberService {
 
         // 소셜 정보 추출
         if ("google".equals(request.provider())) {
+
             email = oAuth2Service.getGoogleUserEmail(request.accessToken());
         } else if ("kakao".equals(request.provider())) {
             KakaoUserInfo userInfo = oAuth2Service.getKakaoUserInfo(request.accessToken());
@@ -38,7 +46,6 @@ public class MemberService {
         } else {
             throw new IllegalArgumentException("지원하지 않는 로그인 방식입니다.");
         }
-
         // email 기준으로 기존 회원 여부 확인
         Member member = memberRepository.findByEmail(email).orElse(null);
 
