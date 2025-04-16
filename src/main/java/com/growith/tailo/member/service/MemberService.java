@@ -37,6 +37,7 @@ public class MemberService {
             email = oAuth2Service.validateIdToken(request.accessToken());
         } else if ("kakao".equals(request.provider())) {
             KakaoUserInfo userInfo = oAuth2Service.getKakaoUserInfo(request.accessToken());
+            log.info("userInfo: {}",userInfo);
             email = userInfo.id();
         } else {
             throw new IllegalArgumentException("지원하지 않는 로그인 방식입니다.");

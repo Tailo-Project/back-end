@@ -3,9 +3,7 @@ package com.growith.tailo.member.oauth;
 
 
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
-
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
+import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,10 +37,14 @@ public class OAuth2Service {
     }
 
     private String extractEmailFromResponse(String response) {
-        // JSON 파싱 후 email 반환
-        return "user@example.com"; // 예시로 반환
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            return jsonObject.getString("email");
+        } catch (Exception e) {
+            log.error("이메일 추출 실패: ", e);
+            throw new RuntimeException("응답에서 이메일을 추출할 수 없습니다.");
+        }
     }
-
 
 
     public KakaoUserInfo getKakaoUserInfo(String accessToken) {
