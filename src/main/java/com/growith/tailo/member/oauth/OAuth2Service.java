@@ -2,7 +2,9 @@ package com.growith.tailo.member.oauth;
 
 
 
+import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
+import org.apache.coyote.BadRequestException;
 import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +49,7 @@ public class OAuth2Service {
     }
 
 
-    public KakaoUserInfo getKakaoUserInfo(String accessToken) {
+    public KakaoUserInfo getKakaoUserInfo(String accessToken) throws BadRequestException {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(accessToken);
@@ -62,7 +64,7 @@ public class OAuth2Service {
             return response.getBody();
         } catch (Exception e) {
             log.error("카카오 로그인 에러" , e);
-            throw new RuntimeException("카카오 로그인 실패", e);
+            throw new BadRequestException("카카오 로그인 실패");
         }
     }
 }
