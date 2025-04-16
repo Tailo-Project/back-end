@@ -23,5 +23,3 @@ spring:
     secret: ${JWT_SECRET}
     accessTokenExpirationTime: 3600000
     refreshTokenExpirationTime: 1209600000
-  google:
-    clientId: ${GOOGLE_CLIENT_ID}
