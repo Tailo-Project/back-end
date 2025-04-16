@@ -28,8 +28,6 @@ public class OAuth2Service {
 
 
     public String validateIdToken(String idToken) throws Exception {
-        JWT jwt = JWTParser.parse(idToken);
-
         // 예시로 Google API에서 정보를 가져와 검증
         String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
         String response = restTemplate.getForObject(url, String.class);
