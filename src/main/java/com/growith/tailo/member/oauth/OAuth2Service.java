@@ -1,10 +1,20 @@
 package com.growith.tailo.member.oauth;
 
 
+
+import com.growith.tailo.member.dto.response.KakaoUserInfo;
+
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 public class OAuth2Service {
 
     private final RestTemplate restTemplate;
+
 
     public String validateIdToken(String idToken) throws Exception {
         JWT jwt = JWTParser.parse(idToken);
@@ -35,22 +46,23 @@ public class OAuth2Service {
     }
 
 
-//    public KakaoUserInfo getKakaoUserInfo(String accessToken) {
-//        try {
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setBearerAuth(accessToken);
-//            HttpEntity<Void> entity = new HttpEntity<>(headers);
-//
-//            ResponseEntity<KakaoUserInfo> response = restTemplate.exchange(
-//                    "https://kapi.kakao.com/v2/user/me",
-//                    HttpMethod.GET,
-//                    entity,
-//                    KakaoUserInfo.class
-//            );
-//            return response.getBody();
-//        } catch (Exception e) {
-//            log.error("카카오 로그인 에러" , e);
-//            throw new RuntimeException("카카오 로그인 실패", e);
-//        }
-//    }
+
+    public KakaoUserInfo getKakaoUserInfo(String accessToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(accessToken);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<KakaoUserInfo> response = restTemplate.exchange(
+                    "https://kapi.kakao.com/v2/user/me",
+                    HttpMethod.GET,
+                    entity,
+                    KakaoUserInfo.class
+            );
+            return response.getBody();
+        } catch (Exception e) {
+            log.error("카카오 로그인 에러" , e);
+            throw new RuntimeException("카카오 로그인 실패", e);
+        }
+    }
 }
