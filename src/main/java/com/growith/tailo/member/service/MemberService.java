@@ -6,13 +6,14 @@ import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
+
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.mapper.to.MemberMapper;
-import com.growith.tailo.security.jwt.entity.RefreshToken;
 import com.growith.tailo.member.oauth.OAuth2Service;
 import com.growith.tailo.member.repository.MemberRepository;
 import com.growith.tailo.security.jwt.JwtUtil;
+import com.growith.tailo.security.jwt.entity.RefreshToken;
 import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,8 @@ public class MemberService {
 
         // 소셜 정보 추출
         if ("google".equals(request.provider())) {
-            email = oAuth2Service.getGoogleUserEmail(request.accessToken());
+
+            email = oAuth2Service.validateIdToken(request.accessToken());
         } else if ("kakao".equals(request.provider())) {
             KakaoUserInfo userInfo = oAuth2Service.getKakaoUserInfo(request.accessToken());
             email = userInfo.id(); // ← KakaoUserInfo 클래스에 getEmail()이 있어야 함
