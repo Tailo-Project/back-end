@@ -5,7 +5,9 @@ on:
 
 name: main-deloy
 env:
-  PROJECT_NAME: action_codedeploy
+  PROJECT_NAME: Tailo
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
 
 jobs:
   deploy:
