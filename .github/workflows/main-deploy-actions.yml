@@ -45,5 +45,5 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://tailo-backend/$PROJECT_NAME/$GITHUB_SHA.zip
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name tailo --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev --s3-location bucket=tailo-backend,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name tailo --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name growit --s3-location bucket=tailo-backend,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
 
