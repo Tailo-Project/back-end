@@ -1,6 +1,7 @@
 package com.growith.tailo.security.jwt;
 
 import com.growith.tailo.member.entity.Member;
+import com.nimbusds.jwt.JWT;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
@@ -33,44 +34,37 @@ public class JwtUtil implements Serializable {
     private long accessTokenExpirationTime;
     private long refreshTokenExpirationTime;
 
-    /**
-     * 시크릿 키를 바이트 배열로 변환하여 Key 객체 반환
-     * @return 서명에 사용할 Key 객체
-     */
+
+     // 시크릿 키를 바이트 배열로 변환하여 Key 객체 반환
+
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    /**
-     * 토큰에서 사용자 이름(subject) 추출
-     */
+
+     // 토큰에서 사용자 이름(subject) 추출
+
     public String getUsernameFromToken(String token) {
         log.debug("토큰에서 사용자 이름 추출 시도");
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    /**
-     * 토큰에서 만료 일자 추출
-     */
+     //토큰에서 만료 일자 추출
     public Date getExpirationDateFromToken(String token) {
         log.debug("토큰에서 만료 날짜 추출 시도");
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    /**
-     * 클레임에서 필요한 값만 추출
-     * @param token JWT 토큰
-     * @param claimsResolver 추출 함수
-     * @param <T> 리턴 타입
-     */
+
+     // 클레임에서 필요한 값만 추출
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    /**
-     * JWT 토큰에서 모든 Claims 추출
-     */
+
+     //JWT 토큰에서 모든 Claims 추출
+
     private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException {
         try {
             log.debug("토큰에서 모든 Claims 파싱 시도");
@@ -89,18 +83,17 @@ public class JwtUtil implements Serializable {
         }
     }
 
-    /**
-     * 토큰 만료 여부 확인
-     */
+
+    //토큰 만료 여부 확인
     public Boolean isTokenExpired(String token) {
         boolean expired = getExpirationDateFromToken(token).before(new Date());
         log.debug("토큰 만료 여부: {}", expired);
         return expired;
     }
 
-    /**
-     * Access Token 생성
-     */
+
+     // Access Token 생성
+
     public String generateAccessToken(Member member) {
         log.info("Access Token 생성 시작 for 사용자: {}", member.getUsername());
         Map<String, Object> claims = new HashMap<>();
@@ -111,9 +104,8 @@ public class JwtUtil implements Serializable {
         return doGenerateAccessToken(claims, member.getUsername());
     }
 
-    /**
-     * 실제 Access Token 생성 로직
-     */
+
+     // 실제 Access Token 생성 로직
     private String doGenerateAccessToken(Map<String, Object> claims, String subject) {
         String token = Jwts.builder()
                 .setClaims(claims)
@@ -127,9 +119,8 @@ public class JwtUtil implements Serializable {
         return token;
     }
 
-    /**
-     * 토큰 검증 (username 일치 & 만료되지 않음)
-     */
+
+     // 토큰 검증 (username 일치 & 만료되지 않음)
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String userName = getUsernameFromToken(token);
         boolean valid = userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
@@ -137,9 +128,8 @@ public class JwtUtil implements Serializable {
         return valid;
     }
 
-    /**
-     * Refresh Token 생성
-     */
+
+    // Refresh Token 생성
     public String generateRefreshToken(UserDetails userDetails) {
         log.info("Refresh Token 생성 시작 for 사용자: {}", userDetails.getUsername());
         Map<String, Object> claims = new HashMap<>();
@@ -150,9 +140,8 @@ public class JwtUtil implements Serializable {
         return doGenerateRefreshToken(claims, userDetails.getUsername());
     }
 
-    /**
-     * 실제 Refresh Token 생성 로직
-     */
+
+    // 실제 Refresh Token 생성 로직
     private String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
         String token = Jwts.builder()
                 .setClaims(claims)
@@ -166,9 +155,9 @@ public class JwtUtil implements Serializable {
         return token;
     }
 
-    /**
-     * Refresh 토큰의 유효성 검사 (만료 여부만 확인)
-     */
+
+     // Refresh 토큰의 유효성 검사 (만료 여부만 확인)
+
     public Boolean validateRefreshToken(String token) {
         boolean valid = !isTokenExpired(token);
         log.debug("Refresh 토큰 유효성 검사 결과: {}", valid);
