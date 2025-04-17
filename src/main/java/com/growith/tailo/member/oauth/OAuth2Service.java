@@ -1,11 +1,9 @@
 package com.growith.tailo.member.oauth;
 
-
-
-import com.growith.tailo.common.exception.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
 import org.apache.coyote.BadRequestException;
-import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
 public class OAuth2Service {
 
     private final RestTemplate restTemplate;
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public String validateIdToken(String idToken) throws Exception {
         // 예시로 Google API에서 정보를 가져와 검증
@@ -42,13 +40,13 @@ public class OAuth2Service {
     }
 
     private String extractEmailFromResponse(String response) {
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            return jsonObject.getString("email");
-        } catch (Exception e) {
-            log.error("이메일 추출 실패: ", e);
-            throw new RuntimeException("응답에서 이메일을 추출할 수 없습니다.");
-        }
+            try {
+                JsonNode jsonNode = objectMapper.readTree(response);
+                return jsonNode.get("email").asText();
+            } catch (Exception e) {
+                log.error("이메일 추출 실패: ", e);
+                throw new RuntimeException("응답에서 이메일을 추출할 수 없습니다.");
+            }
     }
 
 
