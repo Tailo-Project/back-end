@@ -19,7 +19,6 @@ public class MemberMapper {
                 .gender(signUpRequest.gender())
                 .address(signUpRequest.address())
                 .role(Role.USER)
-                .profileImageUrl("")
                 .build();
     }
 }

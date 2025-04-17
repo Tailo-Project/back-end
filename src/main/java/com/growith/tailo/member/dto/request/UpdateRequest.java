@@ -10,6 +10,6 @@ public record UpdateRequest(String nickname,
                             String type,
                             Integer age,
                             GenderType gender,
-                            String address,
-                            MultipartFile file) {
+                            String address
+                            ) {
 }
