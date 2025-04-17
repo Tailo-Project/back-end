@@ -6,6 +6,7 @@ import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/auth/sign-in")
-    public ResponseEntity<ApiResponse<LoginResponse>> socialLogin(@RequestBody SocialLoginRequest request) throws Exception {
+    public ResponseEntity<LoginResponse> socialLogin(@RequestBody SocialLoginRequest request) throws Exception {
         LoginResponse loginResponse = memberService.socialLoginService(request);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("로그인 성공", loginResponse));
+        return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
     }
 
     @PostMapping("/auth/sign-up")
@@ -45,8 +46,8 @@ public class MemberController {
     }
 
     @PatchMapping("/member")
-    public ResponseEntity<ApiResponse<String>> update(@AuthenticationPrincipal Member member, @RequestBody UpdateRequest updateRequest) {
-        String message = memberService.updateProfile(member, updateRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(message));
+    public ResponseEntity<MemberDetailResponse> update(@AuthenticationPrincipal Member member, @RequestBody UpdateRequest updateRequest) {
+        MemberDetailResponse response = memberService.updateProfile(member, updateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
