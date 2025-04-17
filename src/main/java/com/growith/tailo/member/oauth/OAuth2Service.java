@@ -17,6 +17,9 @@ import org.springframework.http.ResponseEntity;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -50,21 +53,27 @@ public class OAuth2Service {
 
 
     public KakaoUserInfo getKakaoUserInfo(String accessToken) throws BadRequestException {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(accessToken);
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
+        String url = "https://kapi.kakao.com/v2/user/me";
 
-            ResponseEntity<KakaoUserInfo> response = restTemplate.exchange(
-                    "https://kapi.kakao.com/v2/user/me",
-                    HttpMethod.GET,
-                    entity,
-                    KakaoUserInfo.class
-            );
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<KakaoUserInfo> response =
+                    restTemplate.exchange(url, HttpMethod.GET, entity, KakaoUserInfo.class);
+
             return response.getBody();
-        } catch (Exception e) {
-            log.error("카카오 로그인 에러" , e);
-            throw new BadRequestException("카카오 로그인 실패");
+
+        } catch (ResourceAccessException e) {
+            // 타임아웃 또는 연결 문제
+            log.error("소셜 로그인 타임아웃 또는 연결 실패", e);
+            throw new BadRequestException("소셜 로그인 실패: 타임아웃 또는 연결 문제");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            // 4xx 또는 5xx 에러
+            log.error("소셜 로그인 요청 실패", e);
+            throw new RuntimeException("소셜 로그인 요청 실패: " + e.getStatusCode());
         }
     }
+
 }
