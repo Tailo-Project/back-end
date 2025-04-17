@@ -6,7 +6,6 @@ import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
-
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.mapper.to.MemberMapper;
@@ -37,7 +36,7 @@ public class MemberService {
             email = oAuth2Service.validateIdToken(request.accessToken());
         } else if ("kakao".equals(request.provider())) {
             KakaoUserInfo userInfo = oAuth2Service.getKakaoUserInfo(request.accessToken());
-            log.info("userInfo: {}",userInfo);
+            log.info("userInfo: {}", userInfo);
             email = userInfo.id();
         } else {
             throw new IllegalArgumentException("지원하지 않는 로그인 방식입니다.");
@@ -66,9 +65,9 @@ public class MemberService {
         if (memberRepository.existsByAccountId(signUpRequest.accountId())) {
             throw new ResourceAlreadyExistException("이미 존재하는 아이디입니다.");
         }
-        String fileName = signUpRequest.file().getOriginalFilename();
+        //String fileName = signUpRequest.file().getOriginalFilename();
         Member signUpMember = MemberMapper.signUpToEntity(signUpRequest);
-        signUpMember.setProfileImageUrl(fileName);
+        //signUpMember.setProfileImageUrl(fileName);
         memberRepository.save(signUpMember);
         return "회원 가입 성공";
     }
@@ -80,7 +79,7 @@ public class MemberService {
     }
 
     @Transactional
-    public String updateProfile(Member member, UpdateRequest updateRequest){
+    public String updateProfile(Member member, UpdateRequest updateRequest) {
         Member updateMember = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("해당 회원이 존재하지 않습니다."));
 
