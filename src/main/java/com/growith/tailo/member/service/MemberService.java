@@ -66,9 +66,7 @@ public class MemberService {
         if (memberRepository.existsByAccountId(signUpRequest.accountId())) {
             throw new ResourceAlreadyExistException("이미 존재하는 아이디입니다.");
         }
-        String fileName = signUpRequest.file().getOriginalFilename();
         Member signUpMember = MemberMapper.signUpToEntity(signUpRequest);
-        signUpMember.setProfileImageUrl(fileName);
         memberRepository.save(signUpMember);
         return "회원 가입 성공";
     }
