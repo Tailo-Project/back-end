@@ -1,10 +1,15 @@
 package com.growith.tailo.feed.hashtag.entity;
 
-import com.growith.tailo.feed.feed.entity.FeedPostHashtag;
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -12,13 +17,22 @@ import java.util.List;
 @Table(name = "hashtag")
 public class Hashtag {
     @Id
+    @Column(name = "hashtag_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String hashtag;
 
-    @OneToMany(mappedBy = "hashtag")
-    private List<FeedPostHashtag> feedPostHashtags;
-    
-    // getters and setters
+    private int count;
+
+    @Builder
+    public Hashtag(String hashtag, int count) {
+        this.hashtag = hashtag;
+        this.count = count;
+    }
+
+    public void increaseCount() {
+        count = count++;
+    }
 }
