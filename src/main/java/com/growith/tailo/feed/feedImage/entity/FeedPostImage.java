@@ -1,5 +1,6 @@
-package com.growith.tailo.feed.feed.entity;
+package com.growith.tailo.feed.feedImage.entity;
 
+import com.growith.tailo.feed.feed.entity.FeedPost;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class FeedPostImage {
     private FeedPost feedPost;
 
     @NotBlank
-    @Column(name = "image_url", nullable = false)
+    @Column(nullable = false)
     private String imageUrl;
 
     @Builder

@@ -6,7 +6,6 @@ import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
-
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.entity.Member;
@@ -43,7 +42,7 @@ public class MemberService {
             email = oAuth2Service.validateIdToken(request.accessToken());
         } else if ("kakao".equals(request.provider())) {
             KakaoUserInfo userInfo = oAuth2Service.getKakaoUserInfo(request.accessToken());
-            log.info("userInfo: {}",userInfo);
+            log.info("userInfo: {}", userInfo);
             email = userInfo.id();
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "지원하지 않는 로그인 방식");
