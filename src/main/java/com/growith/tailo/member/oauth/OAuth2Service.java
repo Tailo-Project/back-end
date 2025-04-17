@@ -1,11 +1,9 @@
 package com.growith.tailo.member.oauth;
 
-
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
-
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
+import org.apache.coyote.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -25,11 +26,9 @@ import org.springframework.web.client.RestTemplate;
 public class OAuth2Service {
 
     private final RestTemplate restTemplate;
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public String validateIdToken(String idToken) throws Exception {
-        JWT jwt = JWTParser.parse(idToken);
-
         // 예시로 Google API에서 정보를 가져와 검증
         String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
         String response = restTemplate.getForObject(url, String.class);
@@ -41,28 +40,38 @@ public class OAuth2Service {
     }
 
     private String extractEmailFromResponse(String response) {
-        // JSON 파싱 후 email 반환
-        return "user@example.com"; // 예시로 반환
+            try {
+                JsonNode jsonNode = objectMapper.readTree(response);
+                return jsonNode.get("email").asText();
+            } catch (Exception e) {
+                log.error("이메일 추출 실패: ", e);
+                throw new RuntimeException("응답에서 이메일을 추출할 수 없습니다.");
+            }
     }
 
 
+    public KakaoUserInfo getKakaoUserInfo(String accessToken) throws BadRequestException {
+        String url = "https://kapi.kakao.com/v2/user/me";
 
-    public KakaoUserInfo getKakaoUserInfo(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(accessToken);
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
+            ResponseEntity<KakaoUserInfo> response =
+                    restTemplate.exchange(url, HttpMethod.GET, entity, KakaoUserInfo.class);
 
-            ResponseEntity<KakaoUserInfo> response = restTemplate.exchange(
-                    "https://kapi.kakao.com/v2/user/me",
-                    HttpMethod.GET,
-                    entity,
-                    KakaoUserInfo.class
-            );
             return response.getBody();
-        } catch (Exception e) {
-            log.error("카카오 로그인 에러" , e);
-            throw new RuntimeException("카카오 로그인 실패", e);
+
+        } catch (ResourceAccessException e) {
+            // 타임아웃 또는 연결 문제
+            log.error("소셜 로그인 타임아웃 또는 연결 실패", e);
+            throw new BadRequestException("소셜 로그인 실패: 타임아웃 또는 연결 문제");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            // 4xx 또는 5xx 에러
+            log.error("소셜 로그인 요청 실패", e);
+            throw new RuntimeException("소셜 로그인 요청 실패: " + e.getStatusCode());
         }
     }
+
 }
