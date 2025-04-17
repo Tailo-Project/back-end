@@ -58,6 +58,7 @@ dependencies {
 
     // image
     implementation 'com.cloudinary:cloudinary-http44:1.39.0'
+    implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {
