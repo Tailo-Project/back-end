@@ -8,8 +8,10 @@ import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
 
 import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.entity.Member;
-import com.growith.tailo.member.mapper.to.MemberMapper;
+import com.growith.tailo.member.mapper.from.FromMemberMapper;
+import com.growith.tailo.member.mapper.to.ToMemberMapper;
 import com.growith.tailo.member.oauth.OAuth2Service;
 import com.growith.tailo.member.repository.MemberRepository;
 import com.growith.tailo.security.jwt.JwtUtil;
@@ -18,7 +20,11 @@ import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +36,7 @@ public class MemberService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public LoginResponse socialLoginService(SocialLoginRequest request) throws Exception {
+    public LoginResponse socialLoginService(SocialLoginRequest request){
         String email;
 
         if ("google".equals(request.provider())) {
@@ -40,7 +46,7 @@ public class MemberService {
             log.info("userInfo: {}",userInfo);
             email = userInfo.id();
         } else {
-            throw new IllegalArgumentException("지원하지 않는 로그인 방식입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "지원하지 않는 로그인 방식");
         }
 
         Member member = memberRepository.findByEmail(email).orElse(null);
@@ -56,6 +62,7 @@ public class MemberService {
         refreshTokenRepository.save(RefreshToken.builder()
                 .accountId(member.getAccountId())
                 .token(refreshToken)
+                .expiresDate(LocalDateTime.now().plusDays(14))
                 .build());
 
         return new LoginResponse(email, accessToken);
@@ -63,10 +70,8 @@ public class MemberService {
 
     @Transactional
     public String signUpService(SignUpRequest signUpRequest) {
-        if (memberRepository.existsByAccountId(signUpRequest.accountId())) {
-            throw new ResourceAlreadyExistException("이미 존재하는 아이디입니다.");
-        }
-        Member signUpMember = MemberMapper.signUpToEntity(signUpRequest);
+        validateAccountId(signUpRequest.accountId());
+        Member signUpMember = ToMemberMapper.signUpToEntity(signUpRequest);
         memberRepository.save(signUpMember);
         return "회원 가입 성공";
     }
@@ -78,12 +83,12 @@ public class MemberService {
     }
 
     @Transactional
-    public String updateProfile(Member member, UpdateRequest updateRequest){
+    public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest){
         Member updateMember = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("해당 회원이 존재하지 않습니다."));
 
         updateMember.updateProfile(updateRequest);
-        return "업데이트 성공";
+        return FromMemberMapper.fromEntity(updateMember);
     }
 }
 

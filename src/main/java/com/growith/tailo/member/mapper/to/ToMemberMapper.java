@@ -6,7 +6,7 @@ import com.growith.tailo.member.enums.Role;
 import lombok.Setter;
 
 @Setter
-public class MemberMapper {
+public class ToMemberMapper {
 
     public static Member signUpToEntity(SignUpRequest signUpRequest){
         return Member.builder()
