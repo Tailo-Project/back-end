@@ -24,7 +24,7 @@ public class QFeedPostImage extends EntityPathBase<FeedPostImage> {
 
     public final com.growith.tailo.feed.feed.entity.QFeedPost feedPost;
 
-    public final NumberPath<Long> feedPostImageId = createNumber("feedPostImageId", Long.class);
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath imageUrl = createString("imageUrl");
 

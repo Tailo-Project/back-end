@@ -10,14 +10,14 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QHashtag is a Querydsl query type for Hashtag
+ * QHashtags is a Querydsl query type for Hashtags
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QHashtag extends EntityPathBase<Hashtag> {
+public class QHashtags extends EntityPathBase<Hashtags> {
 
-    private static final long serialVersionUID = 1686217875L;
+    private static final long serialVersionUID = 733146688L;
 
-    public static final QHashtag hashtag1 = new QHashtag("hashtag1");
+    public static final QHashtags hashtags = new QHashtags("hashtags");
 
     public final NumberPath<Integer> count = createNumber("count", Integer.class);
 
@@ -25,16 +25,16 @@ public class QHashtag extends EntityPathBase<Hashtag> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public QHashtag(String variable) {
-        super(Hashtag.class, forVariable(variable));
+    public QHashtags(String variable) {
+        super(Hashtags.class, forVariable(variable));
     }
 
-    public QHashtag(Path<? extends Hashtag> path) {
+    public QHashtags(Path<? extends Hashtags> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QHashtag(PathMetadata metadata) {
-        super(Hashtag.class, metadata);
+    public QHashtags(PathMetadata metadata) {
+        super(Hashtags.class, metadata);
     }
 
 }

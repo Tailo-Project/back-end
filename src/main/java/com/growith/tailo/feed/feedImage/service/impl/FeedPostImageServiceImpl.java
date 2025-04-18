@@ -6,6 +6,7 @@ import com.growith.tailo.feed.feedImage.entity.FeedPostImage;
 import com.growith.tailo.feed.feedImage.repository.FeedPostImageRepository;
 import com.growith.tailo.feed.feedImage.service.FeedPostImageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class FeedPostImageServiceImpl implements FeedPostImageService {
 
     private final FeedPostImageRepository feedPostImageRepository;
@@ -59,9 +61,7 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
         List<String> existingImageUrls = getImageUrls(feedPost);
         List<String> newImageUrls = convertImageToUrls(newImages);
 
-        if (!existingImageUrls.isEmpty() || existingImageUrls.size() != updatedImageUrls.size()) {
-            deleteNotUsedImages(existingImageUrls, updatedImageUrls);
-        }
+        deleteNotUsedImages(existingImageUrls, updatedImageUrls);
 
         if (!newImages.isEmpty()) {
             registerImage(newImageUrls, feedPost);
@@ -71,11 +71,14 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
     // 사용하지 않는 이미지 삭제
     private void deleteNotUsedImages(List<String> existingImageUrls, List<String> updatedImages) {
         for (String imageUrl : existingImageUrls) {
-            if (updatedImages.contains(imageUrl)) {
+            if (!updatedImages.contains(imageUrl)) {
                 // DB에서 삭제
-                feedPostImageRepository.deleteByImageUrl(imageUrl);
+                int cnt = feedPostImageRepository.deleteByImageUrl(imageUrl);
                 // 이미지 저장소에서 삭제
+                // TODO : 트랜젝션이 중간에 실패해도 반영되기 때문에 이벤트 처리 필요
                 imageUploadHandler.deleteImage(imageUrl);
+
+                log.info("사용하지 않은 이미지 삭제 처리");
             }
         }
     }

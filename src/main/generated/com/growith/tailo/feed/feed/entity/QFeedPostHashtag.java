@@ -24,7 +24,7 @@ public class QFeedPostHashtag extends EntityPathBase<FeedPostHashtag> {
 
     public final QFeedPost feedPost;
 
-    public final com.growith.tailo.feed.hashtag.entity.QHashtag hashtag;
+    public final com.growith.tailo.feed.hashtag.entity.QHashtags hashtags;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -47,7 +47,7 @@ public class QFeedPostHashtag extends EntityPathBase<FeedPostHashtag> {
     public QFeedPostHashtag(Class<? extends FeedPostHashtag> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.feedPost = inits.isInitialized("feedPost") ? new QFeedPost(forProperty("feedPost"), inits.get("feedPost")) : null;
-        this.hashtag = inits.isInitialized("hashtag") ? new com.growith.tailo.feed.hashtag.entity.QHashtag(forProperty("hashtag")) : null;
+        this.hashtags = inits.isInitialized("hashtags") ? new com.growith.tailo.feed.hashtag.entity.QHashtags(forProperty("hashtags")) : null;
     }
 
 }

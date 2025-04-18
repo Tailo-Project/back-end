@@ -80,7 +80,6 @@ public class FeedPostServiceImpl implements FeedPostService {
         }
 
         // 이미지 업데이트
-        List<String> updatedImageUrls = feedUpdateRequest.imageUrls();
         feedPostImageService.ImageUpdateHandler(feedUpdateRequest.imageUrls(), feedPost, images);
 
         // 피드 업데이트

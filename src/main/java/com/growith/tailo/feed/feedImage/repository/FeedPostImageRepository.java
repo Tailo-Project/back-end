@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FeedPostImageRepository extends JpaRepository<FeedPostImage, Long>, FeedPostImageCustomRepository {
-    void deleteByImageUrl(String imageUrl);
+    int deleteByImageUrl(String imageUrl);
 }

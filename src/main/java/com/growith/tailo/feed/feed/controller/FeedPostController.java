@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Feed Post", description = "피드 포스트 API")
@@ -41,9 +42,13 @@ public class FeedPostController {
             })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> registerFeedPost(
-            @RequestPart @Valid FeedPostRequest feedPostRequest,
-            @RequestPart(required = false) List<MultipartFile> images,
+            @RequestPart("feedPostRequest") @Valid FeedPostRequest feedPostRequest,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal Member member) {
+
+        if (images == null) {
+            images = new ArrayList<>();
+        }
 
         String result = feedPostService.registerFeedPost(feedPostRequest, member, images);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponses.created(result));
@@ -59,9 +64,13 @@ public class FeedPostController {
     @PatchMapping(value = "/{feedNumber}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> updateFeedPost(
             @PathVariable("feedNumber") Long feedNumber,
-            @RequestPart @Valid FeedUpdateRequest feedUpdateRequest,
-            @RequestPart(required = false) List<MultipartFile> images,
+            @RequestPart("feedUpdateRequest") @Valid FeedUpdateRequest feedUpdateRequest,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal Member member) {
+
+        if (images == null) {
+            images = new ArrayList<>();
+        }
 
         String result = feedPostService.updateFeedPost(feedNumber, feedUpdateRequest, member, images);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
