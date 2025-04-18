@@ -1,6 +1,7 @@
 package com.growith.tailo.common.handler;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.growith.tailo.common.exception.image.ExceededImageNumberException;
 import com.growith.tailo.common.exception.image.FailUploadImageException;
 import jakarta.annotation.Resource;
@@ -68,6 +69,14 @@ public class ImageUploadHandler {
         return uploadUrl;
     }
 
+    public void deleteImage(String deletedImageUrl) {
+        if ("prod".equals(profile)) {
+            // TODO : D3 연동하게 된다면 추가
+        } else {
+            deleteToCloudinary(deletedImageUrl);
+        }
+    }
+
     private boolean isAllowedExtension(String filename) {
         String lower = filename.toLowerCase();
         return lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".png") || lower.endsWith(".webp");
@@ -93,5 +102,27 @@ public class ImageUploadHandler {
         }
 
         return cloudinary.url().secure(true).generate(publicId);
+    }
+
+    private void deleteToCloudinary(String deletedImageUrl) {
+        String publicId = extractPublicId(deletedImageUrl);
+
+        try {
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FailUploadImageException("파일 삭제 중 실패하였습니다.");
+        }
+    }
+
+    private String extractPublicId(String deletedImageUrl) {
+        try {
+            String afterUpload = deletedImageUrl.split("/upload/")[1];
+            String withoutVersion = afterUpload.replaceFirst("^v\\d+/", "");
+            String publicId = withoutVersion.replaceAll("\\.[^.]+$", "");
+            return publicId;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("이미지 URL에서 Cloudinary Public ID 추출 실패" + deletedImageUrl + e.getMessage());
+        }
     }
 }

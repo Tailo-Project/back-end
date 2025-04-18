@@ -56,7 +56,7 @@ public class FeedPostServiceImpl implements FeedPostService {
 
         // 해시태그 저장
         List<HashtagDto> hashtags = postRegisterRequest.hashtags();
-        if (hashtags.size() > 0) {
+        if (!hashtags.isEmpty()) {
             hashtagService.linkHashtagsToPost(hashtags, feedPost);
         }
 
@@ -65,6 +65,7 @@ public class FeedPostServiceImpl implements FeedPostService {
 
     // 피드 수정
     @Override
+    @Transactional
     public String updateFeedPost(Long feedNumber, FeedUpdateRequest feedUpdateRequest, Member member, List<MultipartFile> images) {
 
         if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
@@ -79,14 +80,15 @@ public class FeedPostServiceImpl implements FeedPostService {
         }
 
         // 이미지 업데이트
-        feedPostImageService.ImageUpdateHandler(feedPost, images);
+        List<String> updatedImageUrls = feedUpdateRequest.imageUrls();
+        feedPostImageService.ImageUpdateHandler(feedUpdateRequest.imageUrls(), feedPost, images);
 
         // 피드 업데이트
         feedPost.updateFeed(feedUpdateRequest.content());
 
         // 해시 업데이트
         List<HashtagDto> newHashtags = feedUpdateRequest.hashtags();
-        if (newHashtags.size() > 0) {
+        if (!newHashtags.isEmpty()) {
             hashtagService.updateHashtagHandler(newHashtags, feedPost);
         }
 

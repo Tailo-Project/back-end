@@ -22,6 +22,7 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
 
     private final ImageUploadHandler imageUploadHandler;
 
+    // 이미지 등록
     @Override
     @Transactional
     public void registerImage(List<String> imageUrls, FeedPost feedPost) {
@@ -42,7 +43,7 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
     // 특정 피드의 이미지 목록 조회
     @Override
     public List<String> getImageUrls(FeedPost feedPost) {
-        return null;
+        return feedPostImageRepository.findImageUrlsByFeedPost(feedPost);
     }
 
     // MultipartFile -> Url (클라우드 저장)
@@ -51,20 +52,28 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
         return imageUploadHandler.uploadMultiImages(images);
     }
 
+    // 게시물 수정에 따른 이미지 처리
     @Override
-    public void ImageUpdateHandler(FeedPost feedPost, List<MultipartFile> images) {
+    public void ImageUpdateHandler(List<String> updatedImageUrls, FeedPost feedPost, List<MultipartFile> newImages) {
 
         List<String> existingImageUrls = getImageUrls(feedPost);
-        List<String> newImageUrls = convertImageToUrls(images);
-        deleteNotUsedImages(existingImageUrls, newImageUrls);
+        List<String> newImageUrls = convertImageToUrls(newImages);
+        
+        if (!existingImageUrls.isEmpty() || existingImageUrls.size() != updatedImageUrls.size()) {
+            deleteNotUsedImages(existingImageUrls, updatedImageUrls);
+        }
 
-        if (images != null && !images.isEmpty()) {
+        if (!newImages.isEmpty()) {
             registerImage(newImageUrls, feedPost);
         }
     }
 
     // 사용하지 않는 이미지 삭제
-    private void deleteNotUsedImages(List<String> existingImageUrls, List<String> newImageUrls) {
-
+    private void deleteNotUsedImages(List<String> existingImageUrls, List<String> updatedImages) {
+        for (String imageUrl : existingImageUrls) {
+            if (updatedImages.contains(imageUrl)) {
+                imageUploadHandler.deleteImage(imageUrl);
+            }
+        }
     }
 }
