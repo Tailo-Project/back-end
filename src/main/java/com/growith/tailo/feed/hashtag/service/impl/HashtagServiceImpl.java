@@ -45,4 +45,15 @@ public class HashtagServiceImpl implements HashtagService {
             feedPostHashtagRepository.save(linkHashtag);
         }
     }
+
+    // 해시 업데이트
+    @Override
+    public void updateHashtagHandler(List<HashtagDto> newHashtags, FeedPost feedPost) {
+
+        decreaseHashtagsCount(newHashtags, feedPost);
+        linkHashtagsToPost(newHashtags, feedPost);
+    }
+
+    private void decreaseHashtagsCount(List<HashtagDto> newHashtags, FeedPost feedPost) {
+    }
 }

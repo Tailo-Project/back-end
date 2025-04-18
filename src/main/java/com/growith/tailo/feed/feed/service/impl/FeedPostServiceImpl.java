@@ -1,7 +1,9 @@
 package com.growith.tailo.feed.feed.service.impl;
 
 import com.growith.tailo.common.exception.ResourceNotFoundException;
+import com.growith.tailo.common.exception.UnauthorizedAccessException;
 import com.growith.tailo.feed.feed.dto.request.FeedPostRequest;
+import com.growith.tailo.feed.feed.dto.request.FeedUpdateRequest;
 import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.feed.feed.repository.FeedPostRepository;
 import com.growith.tailo.feed.feed.service.FeedPostService;
@@ -45,9 +47,11 @@ public class FeedPostServiceImpl implements FeedPostService {
 
         feedPostRepository.save(feedPost);
 
+        List<String> newImageUrls = feedPostImageService.convertImageToUrls(images);
+
         // 이미지 파일 저장
         if (images != null && !images.isEmpty()) {
-            feedPostImageService.registerImage(images, feedPost);
+            feedPostImageService.registerImage(newImageUrls, feedPost);
         }
 
         // 해시태그 저장
@@ -57,5 +61,35 @@ public class FeedPostServiceImpl implements FeedPostService {
         }
 
         return "피드 작성 성공";
+    }
+
+    // 피드 수정
+    @Override
+    public String updateFeedPost(Long feedNumber, FeedUpdateRequest feedUpdateRequest, Member member, List<MultipartFile> images) {
+
+        if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        FeedPost feedPost = feedPostRepository.findById(feedNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 피드가 존재하지 않습니다."));
+
+        if (feedPost.getAuthor().getId() != member.getId()) {
+            throw new UnauthorizedAccessException("해당 게시글의 접근 권한이 없습니다.");
+        }
+
+        // 이미지 업데이트
+        feedPostImageService.ImageUpdateHandler(feedPost, images);
+
+        // 피드 업데이트
+        feedPost.updateFeed(feedUpdateRequest.content());
+
+        // 해시 업데이트
+        List<HashtagDto> newHashtags = feedUpdateRequest.hashtags();
+        if (newHashtags.size() > 0) {
+            hashtagService.updateHashtagHandler(newHashtags, feedPost);
+        }
+
+        return "피드 수정 성공";
     }
 }

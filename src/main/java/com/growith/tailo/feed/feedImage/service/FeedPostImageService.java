@@ -7,6 +7,11 @@ import java.util.List;
 
 public interface FeedPostImageService {
 
-    void registerImage(List<MultipartFile> images, FeedPost feedPost);
+    void registerImage(List<String> imageUrls, FeedPost feedPost);
 
+    List<String> getImageUrls(FeedPost feedPost);
+
+    List<String> convertImageToUrls(List<MultipartFile> images);
+
+    void ImageUpdateHandler(FeedPost feedPost, List<MultipartFile> images);
 }

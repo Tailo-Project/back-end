@@ -24,8 +24,7 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
 
     @Override
     @Transactional
-    public void registerImage(List<MultipartFile> images, FeedPost feedPost) {
-        List<String> imageUrls = imageUploadHandler.uploadMultiImages(images);
+    public void registerImage(List<String> imageUrls, FeedPost feedPost) {
         List<FeedPostImage> feedPostImages = new ArrayList<>();
 
         for (String imageUrl : imageUrls) {
@@ -38,5 +37,34 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
         }
 
         feedPostImageRepository.saveAll(feedPostImages);
+    }
+
+    // 특정 피드의 이미지 목록 조회
+    @Override
+    public List<String> getImageUrls(FeedPost feedPost) {
+        return null;
+    }
+
+    // MultipartFile -> Url (클라우드 저장)
+    @Override
+    public List<String> convertImageToUrls(List<MultipartFile> images) {
+        return imageUploadHandler.uploadMultiImages(images);
+    }
+
+    @Override
+    public void ImageUpdateHandler(FeedPost feedPost, List<MultipartFile> images) {
+
+        List<String> existingImageUrls = getImageUrls(feedPost);
+        List<String> newImageUrls = convertImageToUrls(images);
+        deleteNotUsedImages(existingImageUrls, newImageUrls);
+
+        if (images != null && !images.isEmpty()) {
+            registerImage(newImageUrls, feedPost);
+        }
+    }
+
+    // 사용하지 않는 이미지 삭제
+    private void deleteNotUsedImages(List<String> existingImageUrls, List<String> newImageUrls) {
+
     }
 }
