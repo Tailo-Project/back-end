@@ -2,16 +2,14 @@ package com.growith.tailo.block.entity;
 
 import com.growith.tailo.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "block_members")
+@Builder
 public class BlockMember {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
