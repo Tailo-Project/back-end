@@ -41,7 +41,7 @@ public class Member extends BaseTime implements UserDetails {
 
     private String breed;
 
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     private GenderType gender;

@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -90,12 +89,12 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest){
-        Member updateMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("해당 회원이 존재하지 않습니다."));
-
-        updateMember.updateProfile(updateRequest);
-        return FromMemberMapper.fromMemberDetail(updateMember);
+    public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest) {
+        if (member == null || !memberRepository.existsById(member.getId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+        member.updateProfile(updateRequest);
+        return FromMemberMapper.fromMemberDetail(member);
     }
 }
 
