@@ -51,7 +51,7 @@ public class MemberService {
 
         Member member = memberRepository.findByEmail(email).orElse(null);
         if (member == null) {
-            return new LoginResponse(email, null);
+            return FromMemberMapper.fromMemberLogin(email,null);
         }
 
         String accessToken = jwtUtil.generateAccessToken(member);
@@ -88,7 +88,7 @@ public class MemberService {
                 .orElseThrow(() -> new ResourceNotFoundException("해당 회원이 존재하지 않습니다."));
 
         updateMember.updateProfile(updateRequest);
-        return FromMemberMapper.fromEntity(updateMember);
+        return FromMemberMapper.fromMemberDetail(updateMember);
     }
 }
 

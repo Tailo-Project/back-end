@@ -3,8 +3,6 @@ package com.growith.tailo.member.oauth;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
-import org.apache.coyote.BadRequestException;
-import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
