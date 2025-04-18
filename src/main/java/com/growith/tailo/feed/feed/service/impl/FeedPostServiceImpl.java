@@ -4,6 +4,7 @@ import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.common.exception.UnauthorizedAccessException;
 import com.growith.tailo.feed.feed.dto.request.FeedPostRequest;
 import com.growith.tailo.feed.feed.dto.request.FeedUpdateRequest;
+import com.growith.tailo.feed.feed.dto.response.FeedPostResponse;
 import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.feed.feed.repository.FeedPostRepository;
 import com.growith.tailo.feed.feed.service.FeedPostService;
@@ -13,6 +14,9 @@ import com.growith.tailo.feed.hashtag.service.HashtagService;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +26,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class FeedPostServiceImpl implements FeedPostService {
 
     private final FeedPostRepository feedPostRepository;
@@ -63,6 +68,19 @@ public class FeedPostServiceImpl implements FeedPostService {
         return "피드 작성 성공";
     }
 
+    // 나와 나의 팔로우 피드 목록 조회
+    @Override
+    public Page<FeedPostResponse> getFeedPostList(Member member, Pageable pageable) {
+        if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        Page<FeedPostResponse> pageResult = feedPostRepository.getFeedPostList(member, pageable);
+
+        return pageResult;
+
+    }
+
     // 피드 수정
     @Override
     @Transactional
@@ -93,4 +111,5 @@ public class FeedPostServiceImpl implements FeedPostService {
 
         return "피드 수정 성공";
     }
+
 }
