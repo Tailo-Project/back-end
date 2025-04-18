@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "jwt") // application.yml의 jwt 설정을 자동 매핑
 public class JwtUtil implements Serializable {
 
     @Serial

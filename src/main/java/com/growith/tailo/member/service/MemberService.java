@@ -2,6 +2,7 @@ package com.growith.tailo.member.service;
 
 import com.growith.tailo.common.exception.ResourceAlreadyExistException;
 import com.growith.tailo.common.exception.ResourceNotFoundException;
+import com.growith.tailo.common.handler.ImageUploadHandler;
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -34,7 +36,7 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final OAuth2Service oAuth2Service;
     private final JwtUtil jwtUtil;
-
+    private final ImageUploadHandler imageUploadHandler;
     @Transactional
     public LoginResponse socialLoginService(SocialLoginRequest request){
         String email;
@@ -68,10 +70,16 @@ public class MemberService {
     }
 
     @Transactional
-    public String signUpService(SignUpRequest signUpRequest) {
+    public String signUpService(SignUpRequest signUpRequest, MultipartFile profileImage ) {
         validateAccountId(signUpRequest.accountId());
         Member signUpMember = ToMemberMapper.signUpToEntity(signUpRequest);
+        // 이미지 저장
+        if (profileImage != null && !profileImage.isEmpty()) {
+            String imageUrl = imageUploadHandler.uploadSingleImages(profileImage);
+            signUpMember.setProfileImageUrl(imageUrl);
+        }
         memberRepository.save(signUpMember);
+
         return "회원 가입 성공";
     }
 
