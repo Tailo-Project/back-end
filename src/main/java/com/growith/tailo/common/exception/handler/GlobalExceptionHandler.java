@@ -1,7 +1,11 @@
-package com.growith.tailo.common.exception;
+package com.growith.tailo.common.exception.handler;
 
 
 import com.growith.tailo.common.dto.response.ErrorResponse;
+import com.growith.tailo.common.exception.BadRequestException;
+import com.growith.tailo.common.exception.ResourceAlreadyExistException;
+import com.growith.tailo.common.exception.ResourceNotFoundException;
+import com.growith.tailo.common.exception.UnauthorizedAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,6 +41,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex,
                                                                WebRequest request) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    // 403 Forbidden
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedAccess(UnauthorizedAccessException ex,
+                                                                  WebRequest request) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage(), request);
     }
 
     //409 Conflict
