@@ -2,7 +2,6 @@ package com.growith.tailo.common.exception;
 
 
 import com.growith.tailo.common.dto.response.ErrorResponse;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

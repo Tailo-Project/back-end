@@ -62,7 +62,6 @@ public class MemberService {
         refreshTokenRepository.save(RefreshToken.builder()
                 .accountId(member.getAccountId())
                 .token(refreshToken)
-                .expiresDate(LocalDateTime.now().plusDays(14))
                 .build());
 
         return new LoginResponse(email, accessToken);
