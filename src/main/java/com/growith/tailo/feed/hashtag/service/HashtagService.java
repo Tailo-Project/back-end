@@ -8,5 +8,5 @@ import java.util.List;
 public interface HashtagService {
     void linkHashtagsToPost(List<HashtagDto> hashtagList, FeedPost feedPost);
 
-    void updateHashtagHandler(List<HashtagDto> newHashtags, FeedPost feedPost);
+    void updateHashtagHandler(List<HashtagDto> updatedHashtags, FeedPost feedPost);
 }
