@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "hashtag")
-public class Hashtag {
+@Table(name = "hashtags")
+public class Hashtags {
     @Id
     @Column(name = "hashtag_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,12 +27,16 @@ public class Hashtag {
     private int count;
 
     @Builder
-    public Hashtag(String hashtag, int count) {
+    public Hashtags(String hashtag, int count) {
         this.hashtag = hashtag;
         this.count = count;
     }
 
     public void increaseCount() {
-        count = count++;
+        count++;
+    }
+
+    public void decreaseCount() {
+        count--;
     }
 }

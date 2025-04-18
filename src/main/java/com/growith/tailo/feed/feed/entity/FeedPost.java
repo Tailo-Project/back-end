@@ -39,4 +39,8 @@ public class FeedPost extends BaseTime {
         this.author = author;
         this.content = content;
     }
+
+    public void updateFeed(String content) {
+        this.content = content;
+    }
 }
