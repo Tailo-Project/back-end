@@ -86,7 +86,7 @@ public class HashtagServiceImpl implements HashtagService {
     // 해시 삭제
     private void deleteHashtag(String deleteHashtagName, FeedPost feedPost) {
 
-        log.info("삭제될 요소 : " + deleteHashtagName);
+        log.debug("삭제될 요소 : " + deleteHashtagName);
 
         Hashtags hashtag = hashtagRepository.findByHashtag(deleteHashtagName)
                 .orElseThrow(() -> new ResourceNotFoundException("해시태그를 찾을 수 없습니다."));
@@ -101,7 +101,7 @@ public class HashtagServiceImpl implements HashtagService {
     // 해시 수정
     private void registerHashtag(String registerHashtagName, FeedPost feedPost) {
 
-        log.info("수정될 요소 : " + registerHashtagName);
+        log.debug("수정될 요소 : " + registerHashtagName);
 
         Hashtags hashtag = hashtagRepository.findByHashtag(registerHashtagName)
                 .orElseGet(() -> hashtagRepository.save(

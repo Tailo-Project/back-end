@@ -78,7 +78,7 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
                 // TODO : 트랜젝션이 중간에 실패해도 반영되기 때문에 이벤트 처리 필요
                 imageUploadHandler.deleteImage(imageUrl);
 
-                log.info("사용하지 않은 이미지 삭제 처리");
+                log.debug("사용하지 않은 이미지 삭제 처리");
             }
         }
     }
