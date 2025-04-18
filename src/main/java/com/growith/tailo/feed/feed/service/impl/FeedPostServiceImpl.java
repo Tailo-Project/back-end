@@ -5,6 +5,7 @@ import com.growith.tailo.common.exception.UnauthorizedAccessException;
 import com.growith.tailo.feed.feed.dto.request.FeedPostRequest;
 import com.growith.tailo.feed.feed.dto.request.FeedUpdateRequest;
 import com.growith.tailo.feed.feed.dto.response.FeedPostResponse;
+
 import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.feed.feed.repository.FeedPostRepository;
 import com.growith.tailo.feed.feed.service.FeedPostService;
@@ -68,6 +69,7 @@ public class FeedPostServiceImpl implements FeedPostService {
         return "피드 작성 성공";
     }
 
+  
     // 나와 나의 팔로우 피드 목록 조회
     @Override
     public Page<FeedPostResponse> getFeedPostList(Member member, Pageable pageable) {
@@ -80,6 +82,7 @@ public class FeedPostServiceImpl implements FeedPostService {
         return pageResult;
 
     }
+
 
     // 피드 수정
     @Override
