@@ -58,7 +58,7 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
 
         List<String> existingImageUrls = getImageUrls(feedPost);
         List<String> newImageUrls = convertImageToUrls(newImages);
-        
+
         if (!existingImageUrls.isEmpty() || existingImageUrls.size() != updatedImageUrls.size()) {
             deleteNotUsedImages(existingImageUrls, updatedImageUrls);
         }
@@ -72,6 +72,9 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
     private void deleteNotUsedImages(List<String> existingImageUrls, List<String> updatedImages) {
         for (String imageUrl : existingImageUrls) {
             if (updatedImages.contains(imageUrl)) {
+                // DB에서 삭제
+                feedPostImageRepository.deleteByImageUrl(imageUrl);
+                // 이미지 저장소에서 삭제
                 imageUploadHandler.deleteImage(imageUrl);
             }
         }
