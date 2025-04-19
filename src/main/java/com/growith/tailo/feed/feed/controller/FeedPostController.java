@@ -108,6 +108,22 @@ public class FeedPostController {
     }
 
     @Operation(
+            summary = "특정 피드 조회",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "피드 목록 조회 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
+            })
+    @GetMapping("/feedId")
+    public ResponseEntity<ApiResponse<FeedPostResponse>> getFeedPost(
+            @PathVariable("feedId") Long feedId,
+            @AuthenticationPrincipal Member member) {
+
+        FeedPostResponse result = feedPostService.getFeedPost(feedId, member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
+
+    }
+
+    @Operation(
             summary = "피드 삭제",
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "피드 목록 조회 성공"),
