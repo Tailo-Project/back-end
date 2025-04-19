@@ -94,7 +94,10 @@ public class MemberService {
         if (member == null || !memberRepository.existsById(member.getId())) {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
         }
-        validateAccountId(updateRequest.accountId());
+
+        if (!member.getAccountId().equals(updateRequest.accountId())) {
+            validateAccountId(updateRequest.accountId());
+        }
         // 기존 이미지 삭제 처리
         if (profileImage != null && !profileImage.isEmpty()) {
             String oldImageUrl = member.getProfileImageUrl();
