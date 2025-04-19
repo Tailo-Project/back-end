@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-
-import org.springframework.http.*;
-
-
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -23,9 +23,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class OAuth2Service {
 
     private final RestTemplate restTemplate;
+
     private final ObjectMapper objectMapper;
 
     public String validateIdToken(String idToken) {
+
         // 예시로 Google API에서 정보를 가져와 검증
         String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
 
@@ -49,7 +51,7 @@ public class OAuth2Service {
     }
 
 
-    public KakaoUserInfo getKakaoUserInfo(String accessToken)  {
+    public KakaoUserInfo getKakaoUserInfo(String accessToken) {
         String url = "https://kapi.kakao.com/v2/user/me";
 
         HttpHeaders headers = new HttpHeaders();

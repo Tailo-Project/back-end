@@ -40,7 +40,7 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final ImageUploadHandler imageUploadHandler;
     @Transactional
-    public LoginResponse socialLoginService(SocialLoginRequest request){
+    public LoginResponse socialLoginService(SocialLoginRequest request) {
         String email;
 
         if ("google".equals(request.provider())) {
@@ -72,12 +72,14 @@ public class MemberService {
     }
 
     @Transactional
+
     public String signUpService(SignUpRequest signUpRequest, MultipartFile profileImage ) {
         validateAccountId(signUpRequest.accountId());
         Member signUpMember = ToMemberMapper.signUpToEntity(signUpRequest);
         // 이미지 저장
         String imageUrl = saveImage(profileImage);
         signUpMember.setProfileImageUrl(imageUrl);
+
         memberRepository.save(signUpMember);
 
         return "회원 가입 성공";
@@ -90,6 +92,7 @@ public class MemberService {
     }
 
     @Transactional
+
     public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest,MultipartFile profileImage) {
         if (member == null || !memberRepository.existsById(member.getId())) {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
@@ -110,6 +113,7 @@ public class MemberService {
             throw new DeleteImageException("프로필 이미지 삭제 실패");
         }
         return imageUploadHandler.uploadSingleImages(profileImage);
+
 
     }
     private String updateImage(MultipartFile profileImage){

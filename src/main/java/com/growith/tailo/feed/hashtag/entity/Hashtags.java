@@ -21,7 +21,7 @@ public class Hashtags {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String hashtag;
 
     private int count;
@@ -37,6 +37,8 @@ public class Hashtags {
     }
 
     public void decreaseCount() {
-        count--;
+        if (count > 0) {
+            count--;
+        }
     }
 }

@@ -54,6 +54,7 @@ public class HashtagServiceImpl implements HashtagService {
 
     // 해시 업데이트
     @Override
+    @Transactional
     public void updateHashtagHandler(List<HashtagDto> updatedHashtags, FeedPost feedPost) {
 
         List<FeedPostHashtag> currentHashtags = feedPostHashtagRepository.findHashtagByFeedPost(feedPost);
