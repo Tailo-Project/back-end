@@ -1,8 +1,6 @@
 spring:
   application:
     name: Tailo
-  profiles:
-    active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL 드라이버
     url: jdbc:mysql://${RDS_MYSQL}/tailo_db  # RDS 엔드포인트와 DB 이름
