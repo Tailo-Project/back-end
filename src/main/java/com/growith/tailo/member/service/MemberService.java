@@ -35,7 +35,7 @@ public class MemberService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public LoginResponse socialLoginService(SocialLoginRequest request){
+    public LoginResponse socialLoginService(SocialLoginRequest request) {
         String email;
 
         if ("google".equals(request.provider())) {
@@ -69,8 +69,10 @@ public class MemberService {
 
     @Transactional
     public String signUpService(SignUpRequest signUpRequest) {
+
         validateAccountId(signUpRequest.accountId());
         Member signUpMember = ToMemberMapper.signUpToEntity(signUpRequest);
+
         memberRepository.save(signUpMember);
         return "회원 가입 성공";
     }
@@ -82,7 +84,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest){
+    public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest) {
         Member updateMember = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("해당 회원이 존재하지 않습니다."));
 
