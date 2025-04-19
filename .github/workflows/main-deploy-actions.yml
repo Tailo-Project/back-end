@@ -4,10 +4,6 @@ on:
       - main
 
 name: main-deloy
-env:
-  PROJECT_NAME: Tailo
-  JWT_SECRET: ${{ secrets.JWT_SECRET }}
-  JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
 
 jobs:
   deploy:
@@ -28,8 +24,8 @@ jobs:
         run: chmod +x gradlew
         shell: bash
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build with Gradle using prod profile
+        run: ./gradlew build -Dspring.profiles.active=prod
         shell: bash
         
       - name: Make zip file
