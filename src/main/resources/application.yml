@@ -28,3 +28,4 @@ cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}
   api_key: ${CLOUDINARY_KEY}
   api_secret: ${CLOUDINARY_API_SECRET}
+
