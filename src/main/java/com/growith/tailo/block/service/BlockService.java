@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,5 +51,16 @@ public class BlockService {
                 .blocker(member).blocked(blockedMember).build();
         blockRepository.save(block);
         return "사용자를 차단했습니다.";
+    }
+    // 사용자 차단 해제
+    public String deleteBlockedService(Member member, String accountId){
+        Member blockedMember = memberRepository.findByAccountId(accountId).orElseThrow(
+                ()-> new ResourceNotFoundException("사용자를 찾을 수 없습니다.")
+        );
+        BlockMember blockTable = blockRepository.findByBlockerAndBlocked(member,blockedMember).orElseThrow(
+                ()->new ResourceNotFoundException("차단한 사용자를 찾을 수 없습니다.")
+        );
+        blockRepository.delete(blockTable);
+        return "차단 해제 완료";
     }
 }

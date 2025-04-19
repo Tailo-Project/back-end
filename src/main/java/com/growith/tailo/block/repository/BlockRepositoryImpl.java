@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.growith.tailo.block.entity.QBlockMember.blockMember;
 
 @RequiredArgsConstructor
 public class BlockRepositoryImpl implements BlockQueryDSLRepository{
@@ -19,11 +18,13 @@ public class BlockRepositoryImpl implements BlockQueryDSLRepository{
 
     @Override
     public List<BlockMember> findAllBlockedMember(Member member) {
+        QBlockMember blockMember = QBlockMember.blockMember;
+        QMember qMember = QMember.member;
         return queryFactory
                 .select(blockMember)
                 .from(blockMember) // 차단관리 테이블
                 .join(blockMember.blocked).fetchJoin() // 차단당한 사용자의 정보를 조인
-                .where(blockMember.blocker.eq(member))  // 차단한 사용자가 멤버와 일치하는 경우
+                .where(blockMember.blocker.eq(qMember))  // 차단한 사용자가 멤버와 일치하는 경우
                 .fetch();
     }
 }
