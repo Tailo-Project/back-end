@@ -23,3 +23,9 @@ springdoc:
   ## API로 시작하는 URL만
   paths-to-match:
     - /api/**
+
+cloudinary:
+  cloud_name: ${CLOUDINARY_CLOUD_NAME}
+  api_key: ${CLOUDINARY_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}
+

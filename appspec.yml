@@ -11,11 +11,12 @@ permissions:
     mode: 755
 hooks:
   BeforeInstall:
-    - location: scripts/cleanup.sh
+    - location: cleanup.sh
       timeout: 60
       runas: root
 
   AfterInstall:
+    # location은 프로젝트의 root경로를 기준
     - location: deploy.sh
       timeout: 60
       runas: root

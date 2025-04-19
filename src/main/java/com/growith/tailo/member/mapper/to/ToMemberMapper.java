@@ -6,9 +6,9 @@ import com.growith.tailo.member.enums.Role;
 import lombok.Setter;
 
 @Setter
-public class MemberMapper {
+public class ToMemberMapper {
 
-    public static Member signUpToEntity(SignUpRequest signUpRequest){
+    public static Member signUpToEntity(SignUpRequest signUpRequest, String profileImageUrl){
         return Member.builder()
                 .email(signUpRequest.email())
                 .accountId(signUpRequest.accountId())
@@ -19,6 +19,8 @@ public class MemberMapper {
                 .gender(signUpRequest.gender())
                 .address(signUpRequest.address())
                 .role(Role.USER)
+                .profileImageUrl(profileImageUrl)
                 .build();
     }
+
 }

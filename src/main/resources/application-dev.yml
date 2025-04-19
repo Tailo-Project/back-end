@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: Tailo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL 드라이버
+    url: jdbc:mysql://${RDS_MYSQL}/tailo_db  # RDS 엔드포인트와 DB 이름
+    username: ${DB_USERNAME}  # 환경변수로 MySQL 사용자명 설정
+    password: ${DB_PASSWORD}  # 환경변수로 MySQL 비밀번호 설정
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect  # MySQL Dialect 사용
+    hibernate:
+      ddl-auto: update  # 개발 단계에서는 'update'가 일반적, 'create-drop'은 테스트에서 사용
+    show-sql: true  # SQL 쿼리 출력
+  sql:
+    init:
+      mode: never  # SQL 초기화 비활성화
+  jwt:
+    issuer: ${JWT_ISSUER}
+    secret: ${JWT_SECRET}
+    accessTokenExpirationTime: 3600000
+    refreshTokenExpirationTime: 1209600000
