@@ -24,7 +24,7 @@ public class FeedPostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "feed_post_image_id")
-    private Long feedPostImageId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "feed_post_id", nullable = false)

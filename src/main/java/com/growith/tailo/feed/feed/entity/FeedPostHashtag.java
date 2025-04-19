@@ -1,6 +1,6 @@
 package com.growith.tailo.feed.feed.entity;
 
-import com.growith.tailo.feed.hashtag.entity.Hashtag;
+import com.growith.tailo.feed.hashtag.entity.Hashtags;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,11 +30,11 @@ public class FeedPostHashtag {
 
     @ManyToOne
     @JoinColumn(name = "hashtag_id")
-    private Hashtag hashtag;
+    private Hashtags hashtags;
 
     @Builder
-    public FeedPostHashtag(FeedPost feedPost, Hashtag hashtag) {
+    public FeedPostHashtag(FeedPost feedPost, Hashtags hashtags) {
         this.feedPost = feedPost;
-        this.hashtag = hashtag;
+        this.hashtags = hashtags;
     }
 }
