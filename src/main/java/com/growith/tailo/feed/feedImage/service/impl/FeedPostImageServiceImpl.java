@@ -63,6 +63,13 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
 
         deleteNotUsedImages(existingImageUrls, updatedImageUrls);
 
+        int remainImagesCount = updatedImageUrls.size();
+        int newImagesCount = newImageUrls.size();
+
+        if (remainImagesCount + newImagesCount > 4) {
+            throw new IllegalArgumentException("이미지는 최대 4개까지만 등록할 수 있습니다.");
+        }
+
         if (!newImages.isEmpty()) {
             registerImage(newImageUrls, feedPost);
         }
