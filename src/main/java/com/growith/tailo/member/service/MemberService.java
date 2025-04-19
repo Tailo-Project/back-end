@@ -2,6 +2,8 @@ package com.growith.tailo.member.service;
 
 import com.growith.tailo.common.exception.ResourceAlreadyExistException;
 import com.growith.tailo.common.exception.ResourceNotFoundException;
+import com.growith.tailo.common.exception.image.DeleteImageException;
+import com.growith.tailo.common.exception.image.FailUploadImageException;
 import com.growith.tailo.common.handler.ImageUploadHandler;
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
@@ -21,6 +23,7 @@ import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,10 +76,8 @@ public class MemberService {
         validateAccountId(signUpRequest.accountId());
         Member signUpMember = ToMemberMapper.signUpToEntity(signUpRequest);
         // 이미지 저장
-        if (profileImage != null && !profileImage.isEmpty()) {
-            String imageUrl = imageUploadHandler.uploadSingleImages(profileImage);
-            signUpMember.setProfileImageUrl(imageUrl);
-        }
+        String imageUrl = saveImage(profileImage);
+        signUpMember.setProfileImageUrl(imageUrl);
         memberRepository.save(signUpMember);
 
         return "회원 가입 성공";
@@ -89,12 +90,33 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest) {
+    public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest,MultipartFile profileImage) {
         if (member == null || !memberRepository.existsById(member.getId())) {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
         }
         member.updateProfile(updateRequest);
+        saveImage(profileImage);
         return FromMemberMapper.fromMemberDetail(member);
+    }
+    // 이미지 저장
+    private String saveImage(MultipartFile profileImage) {
+        if(profileImage==null && profileImage.isEmpty()){
+            throw new FailUploadImageException("프로필 이미지 업로드 실패");
+        }
+        return imageUploadHandler.uploadSingleImages(profileImage);
+    }
+    private String deleteImage(MultipartFile profileImage){
+        if(profileImage==null && profileImage.isEmpty()){
+            throw new DeleteImageException("프로필 이미지 삭제 실패");
+        }
+        return imageUploadHandler.uploadSingleImages(profileImage);
+
+    }
+    private String updateImage(MultipartFile profileImage){
+        if(profileImage==null && profileImage.isEmpty()){
+            throw new FailUploadImageException("프로필 이미지 업로드 실패");
+        }
+        return imageUploadHandler.uploadSingleImages(profileImage);
     }
 }
 

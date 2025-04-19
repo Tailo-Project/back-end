@@ -37,7 +37,7 @@ public class MemberController {
 
     @PostMapping(value = "/auth/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> signUp(
-            @RequestPart("request") @Valid SignUpRequest request,
+            @RequestPart("request") SignUpRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     )  {
         String message = memberService.signUpService(request,profileImage);
@@ -52,9 +52,11 @@ public class MemberController {
     }
 
     @Operation(summary = "프로필 수정", description = "회원의 프로필을 수정")
-    @PatchMapping("/member")
-    public ResponseEntity<ApiResponse<MemberDetailResponse>> update(@AuthenticationPrincipal Member member, @RequestBody UpdateRequest updateRequest) {
-        MemberDetailResponse response = memberService.updateProfile(member, updateRequest);
+    @PatchMapping(value = "/member" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<MemberDetailResponse>> update(@AuthenticationPrincipal Member member,
+                                                                    @RequestPart("request") UpdateRequest updateRequest,
+                                                                    @RequestPart(value = "profileImage", required = false)MultipartFile profileImage) {
+        MemberDetailResponse response = memberService.updateProfile(member, updateRequest,profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
     }
 }
