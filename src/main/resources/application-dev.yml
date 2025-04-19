@@ -1,9 +1,11 @@
 spring:
   application:
     name: Tailo
+  profiles:
+    active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL 드라이버
-    url: jdbc:mysql://localhost:3306/tailo_db  # RDS 엔드포인트와 DB 이름
+    url: jdbc:mysql://${RDS_MYSQL}/tailo_db  # RDS 엔드포인트와 DB 이름
     username: ${DB_USERNAME}  # 환경변수로 MySQL 사용자명 설정
     password: ${DB_PASSWORD}  # 환경변수로 MySQL 비밀번호 설정
   jpa:
