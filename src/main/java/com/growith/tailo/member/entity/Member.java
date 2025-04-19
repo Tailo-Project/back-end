@@ -1,6 +1,5 @@
 package com.growith.tailo.member.entity;
 
-import com.growith.tailo.block.entity.BlockMember;
 import com.growith.tailo.chat.entity.ChatMessage;
 import com.growith.tailo.common.entity.BaseTime;
 import com.growith.tailo.feed.comment.entity.Comment;
