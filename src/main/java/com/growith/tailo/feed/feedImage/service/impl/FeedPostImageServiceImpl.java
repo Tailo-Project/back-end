@@ -68,6 +68,18 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
         }
     }
 
+    // 이미지 삭제
+    @Override
+    @Transactional
+    public void deleteImagesByFeedPost(FeedPost feedPost) {
+        List<FeedPostImage> images = feedPostImageRepository.findByFeedPost(feedPost);
+
+        for (FeedPostImage image : images) {
+            imageUploadHandler.deleteImage(image.getImageUrl());
+        }
+        feedPostImageRepository.deleteByFeedPost(feedPost);
+    }
+
     // 사용하지 않는 이미지 삭제
     private void deleteNotUsedImages(List<String> existingImageUrls, List<String> updatedImages) {
         for (String imageUrl : existingImageUrls) {
