@@ -25,7 +25,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle using prod profile
-        run: ./gradlew build -Dspring.profiles.active=prod
+        run: ./gradlew build -Dspring.profiles.active=dev
         shell: bash
         
       - name: Make zip file
