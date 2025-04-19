@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseTime {
 
-    @CreatedDate
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

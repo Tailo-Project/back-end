@@ -40,6 +40,9 @@ public class BlockService {
     }
     // 사용자 차단
     public String blockingMemberService(Member member, String accountId){
+        if (member.getAccountId().equals(accountId)) {
+            throw new IllegalArgumentException("자기 자신을 차단할 수 없습니다.");
+        }
         Member blockedMember = memberRepository.findByAccountId(accountId).orElseThrow(
                 ()->new ResourceNotFoundException("사용자를 찾을 수 없습니다.")
         );
