@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.memberRepository.findByAccountId(username).orElseThrow(()->new ResourceNotFoundException("AccountId가 없습니다."));
+    public UserDetails loadUserByUsername(String accountId) throws UsernameNotFoundException {
+        return this.memberRepository.findByAccountId(accountId).orElseThrow(()->new ResourceNotFoundException("AccountId가 없습니다."));
     }
 }

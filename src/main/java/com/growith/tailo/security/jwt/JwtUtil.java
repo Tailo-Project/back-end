@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -106,7 +105,7 @@ public class JwtUtil implements Serializable {
     public String generateAccessToken(Member member) {
         log.info("Access Token 생성 시작 for 사용자: {}", member.getUsername());
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", member.getUsername());
+        claims.put("accountId", member.getUsername());
         claims.put("role", member.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(",")));
@@ -142,7 +141,7 @@ public class JwtUtil implements Serializable {
     public String generateRefreshToken(UserDetails userDetails) {
         log.info("Refresh Token 생성 시작 for 사용자: {}", userDetails.getUsername());
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", userDetails.getUsername());
+        claims.put("accountId", userDetails.getUsername());
         claims.put("role", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(",")));
