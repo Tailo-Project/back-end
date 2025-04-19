@@ -1,5 +1,6 @@
-package com.growith.tailo.feed.feed.entity;
+package com.growith.tailo.feed.feedImage.entity;
 
+import com.growith.tailo.feed.feed.entity.FeedPost;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,14 +24,14 @@ public class FeedPostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "feed_post_image_id")
-    private Long feedPostImageId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "feed_post_id", nullable = false)
     private FeedPost feedPost;
 
     @NotBlank
-    @Column(name = "image_url", nullable = false)
+    @Column(nullable = false)
     private String imageUrl;
 
     @Builder

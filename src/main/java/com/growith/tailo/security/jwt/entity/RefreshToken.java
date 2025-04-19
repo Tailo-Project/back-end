@@ -27,12 +27,11 @@ public class RefreshToken extends BaseTime {
     private LocalDateTime expiresDate;
 
     @Builder
-    public RefreshToken(String accountId, String token, LocalDateTime createdDate, LocalDateTime expiresDate) {
+    public RefreshToken(String accountId, String token, LocalDateTime expiresDate) {
         this.accountId = accountId;
         this.token = token;
-        this.expiresDate = expiresDate;
+        this.expiresDate = LocalDateTime.now().plusDays(14);
     }
-
     // 토큰 업데이트 메서드
     public void updateToken(String token) {
         this.token = token;
