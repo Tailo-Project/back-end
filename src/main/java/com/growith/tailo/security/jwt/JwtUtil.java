@@ -1,12 +1,16 @@
 package com.growith.tailo.security.jwt;
 
 import com.growith.tailo.member.entity.Member;
-import com.nimbusds.jwt.JWT;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,54 +20,59 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Getter @Setter
+@Getter
+@Setter
 @Component
-@ConfigurationProperties(prefix = "jwt") // application.yml의 jwt 설정을 자동 매핑
 public class JwtUtil implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
+    @Value("${spring.jwt.secret}")
     private String secret;
+    @Value("${spring.jwt.issuer}")
     private String issuer;
+    @Value("${spring.jwt.accessTokenExpirationTime}")
     private long accessTokenExpirationTime;
+    @Value("${spring.jwt.refreshTokenExpirationTime}")
     private long refreshTokenExpirationTime;
 
 
-     // 시크릿 키를 바이트 배열로 변환하여 Key 객체 반환
+    // 시크릿 키를 바이트 배열로 변환하여 Key 객체 반환
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
 
-     // 토큰에서 사용자 이름(subject) 추출
+    // 토큰에서 사용자 이름(subject) 추출
 
     public String getUsernameFromToken(String token) {
         log.debug("토큰에서 사용자 이름 추출 시도");
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-     //토큰에서 만료 일자 추출
+    //토큰에서 만료 일자 추출
     public Date getExpirationDateFromToken(String token) {
         log.debug("토큰에서 만료 날짜 추출 시도");
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
 
-     // 클레임에서 필요한 값만 추출
+    // 클레임에서 필요한 값만 추출
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
 
-     //JWT 토큰에서 모든 Claims 추출
+    //JWT 토큰에서 모든 Claims 추출
 
     private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException {
         try {
@@ -92,7 +101,7 @@ public class JwtUtil implements Serializable {
     }
 
 
-     // Access Token 생성
+    // Access Token 생성
 
     public String generateAccessToken(Member member) {
         log.info("Access Token 생성 시작 for 사용자: {}", member.getUsername());
@@ -105,7 +114,7 @@ public class JwtUtil implements Serializable {
     }
 
 
-     // 실제 Access Token 생성 로직
+    // 실제 Access Token 생성 로직
     private String doGenerateAccessToken(Map<String, Object> claims, String subject) {
         String token = Jwts.builder()
                 .setClaims(claims)
@@ -120,7 +129,7 @@ public class JwtUtil implements Serializable {
     }
 
 
-     // 토큰 검증 (username 일치 & 만료되지 않음)
+    // 토큰 검증 (username 일치 & 만료되지 않음)
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String userName = getUsernameFromToken(token);
         boolean valid = userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
@@ -156,7 +165,7 @@ public class JwtUtil implements Serializable {
     }
 
 
-     // Refresh 토큰의 유효성 검사 (만료 여부만 확인)
+    // Refresh 토큰의 유효성 검사 (만료 여부만 확인)
 
     public Boolean validateRefreshToken(String token) {
         boolean valid = !isTokenExpired(token);

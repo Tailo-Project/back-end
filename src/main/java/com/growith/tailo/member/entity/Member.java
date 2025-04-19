@@ -1,5 +1,6 @@
 package com.growith.tailo.member.entity;
 
+import com.growith.tailo.block.entity.BlockMember;
 import com.growith.tailo.chat.entity.ChatMessage;
 import com.growith.tailo.common.entity.BaseTime;
 import com.growith.tailo.feed.comment.entity.Comment;
@@ -40,7 +41,7 @@ public class Member extends BaseTime implements UserDetails {
 
     private String breed;
 
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     private GenderType gender;
@@ -54,18 +55,17 @@ public class Member extends BaseTime implements UserDetails {
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "sender")
-    private List<ChatMessage> sentMessages;
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<ChatMessage> sentMessages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Comment> comments =new ArrayList<>();
 
-    @OneToMany(mappedBy = "follower")
-    private List<Follow> followers;
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Follow> followers= new ArrayList<>();
 
-    @OneToMany(mappedBy = "following")
-    private List<Follow> followings;
-
+    @OneToMany(mappedBy = "following", fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Follow> followings=new ArrayList<>();
 
 
     @Override
