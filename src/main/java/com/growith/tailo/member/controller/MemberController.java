@@ -34,7 +34,7 @@ public class MemberController {
         LoginResponse loginResponse = memberService.socialLoginService(request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(loginResponse));
     }
-
+    @Operation(summary = "회원가입", description = "JSON과 프로필 이미지를 함께 전송합니다.")
     @PostMapping(value = "/auth/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> signUp(
             @RequestPart("request") SignUpRequest request,
