@@ -113,7 +113,7 @@ public class FeedPostController {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "피드 목록 조회 성공"),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
             })
-    @GetMapping("/feedId")
+    @GetMapping("/{feedId}")
     public ResponseEntity<ApiResponse<FeedPostResponse>> getFeedPost(
             @PathVariable("feedId") Long feedId,
             @AuthenticationPrincipal Member member) {
