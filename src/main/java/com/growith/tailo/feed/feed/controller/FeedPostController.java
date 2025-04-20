@@ -124,12 +124,14 @@ public class FeedPostController {
     }
 
     @Operation(
+
             summary = "피드 삭제",
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "피드 목록 조회 성공"),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
             })
-    @DeleteMapping("/feedId")
+
+    @DeleteMapping("/{feedId}")
     public ResponseEntity<ApiResponse<String>> deleteFeedPost(
             @PathVariable("feedId") Long feedId,
             @AuthenticationPrincipal Member member) {
