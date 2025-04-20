@@ -5,4 +5,6 @@ import com.growith.tailo.member.entity.Member;
 
 public interface CommentService {
     String registerComment(Long feedId, CommentRequest commentRequest, Member member);
+
+    String deleteComment(Long feedId, Long commentId, Member member);
 }

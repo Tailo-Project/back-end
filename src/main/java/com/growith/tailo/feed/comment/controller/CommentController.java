@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +43,24 @@ public class CommentController {
         String result = commentService.registerComment(feedId, commentRequest, member);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponses.created(result));
+    }
+
+    @Operation(
+            summary = "댓글 삭제",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
+            })
+    @DeleteMapping("/{feedId}/comments/{commentId}")
+    public ResponseEntity<ApiResponse<String>> deleteComment(
+            @PathVariable("feedId") Long feedId,
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal Member member
+    ) {
+
+        String result = commentService.deleteComment(feedId, commentId, member);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 
 }

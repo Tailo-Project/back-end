@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -55,5 +56,38 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         return "댓글 등록 성공";
+    }
+
+    // 댓글 삭제
+    @Override
+    @Transactional
+    public String deleteComment(Long feedId, Long commentId, Member member) {
+
+        if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        FeedPost feedPost = feedPostRepository.findById(feedId)
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 피드입니다."));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 댓글입니다."));
+
+        if (!comment.getFeedPost().getId().equals(feedId)) {
+            throw new IllegalArgumentException("요청한 피드와 댓글이 속한 피드가 일치하지 않습니다.");
+        }
+
+        if (!comment.getAuthor().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("댓글 삭제할 권한이 없습니다.");
+        }
+
+        // 대댓글 삭제
+        List<Comment> childComments = commentRepository.findByParentComment(comment);
+        commentRepository.deleteAll(childComments);
+
+        // 댓글 삭제
+        commentRepository.deleteById(commentId);
+
+        return "댓글 삭제 성공";
     }
 }
