@@ -8,6 +8,7 @@ import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.enums.GenderType;
 import com.growith.tailo.member.enums.Role;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,7 +28,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,29 +44,34 @@ public class Member extends BaseTime implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String email;
-    //@Column(unique = true, nullable = false)
+
+    @Column(unique = true, nullable = false)
     private String accountId;
 
+    @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
     private String type;
 
+    @Column(nullable = false)
     private String breed;
 
+    @Column(nullable = false)
     private Integer age;
 
     @Enumerated(EnumType.STRING)
     private GenderType gender;
 
+    @Column(nullable = false)
     private String address;
 
     private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<ChatMessage> sentMessages = new ArrayList<>();
