@@ -14,4 +14,6 @@ public interface FeedPostImageService {
     List<String> convertImageToUrls(List<MultipartFile> images);
 
     void ImageUpdateHandler(List<String> updatedImageUrls, FeedPost feedPost, List<MultipartFile> newImages);
+
+    void deleteImagesByFeedPost(FeedPost feedPost);
 }

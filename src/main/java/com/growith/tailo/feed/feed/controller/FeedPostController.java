@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -105,5 +106,22 @@ public class FeedPostController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
 
     }
+
+    @Operation(
+            summary = "피드 삭제",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "피드 목록 조회 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
+            })
+    @DeleteMapping("/{feedId}")
+    public ResponseEntity<ApiResponse<String>> deleteFeedPost(
+            @PathVariable("feedId") Long feedId,
+            @AuthenticationPrincipal Member member) {
+
+        String result = feedPostService.deleteFeedPost(feedId, member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
+
+    }
+
 
 }
