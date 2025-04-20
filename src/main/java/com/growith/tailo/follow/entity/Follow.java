@@ -7,6 +7,8 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Table(name = "follows")
 public class Follow {
     @Id
@@ -21,5 +23,4 @@ public class Follow {
     @JoinColumn(name = "following_id")
     private Member following;
     
-    // getters and setters
 }
