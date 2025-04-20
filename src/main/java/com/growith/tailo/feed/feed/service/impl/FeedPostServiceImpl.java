@@ -85,13 +85,13 @@ public class FeedPostServiceImpl implements FeedPostService {
     // 피드 수정
     @Override
     @Transactional
-    public String updateFeedPost(Long feedNumber, FeedUpdateRequest feedUpdateRequest, Member member, List<MultipartFile> images) {
+    public String updateFeedPost(Long feedId, FeedUpdateRequest feedUpdateRequest, Member member, List<MultipartFile> images) {
 
         if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
         }
 
-        FeedPost feedPost = feedPostRepository.findById(feedNumber)
+        FeedPost feedPost = feedPostRepository.findById(feedId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 피드가 존재하지 않습니다."));
 
         if (feedPost.getAuthor().getId() != member.getId()) {
