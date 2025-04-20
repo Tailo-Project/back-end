@@ -7,11 +7,11 @@ import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
+import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,9 +46,15 @@ public class MemberController {
 
     @Operation(summary = "아이디 중복 확인", description = "사용할 수 있는 아이디인지 확인")
     @GetMapping("/member/duplicate/{accountId}")
-    public ResponseEntity<ApiResponse<String>> duplicateAccount(@PathVariable String accountId) {
+    public ResponseEntity<ApiResponse<String>> duplicateAccount(@PathVariable("accountId") String accountId) {
         memberService.validateAccountId(accountId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("사용 가능한 아이디입니다."));
+    }
+    @Operation(summary = "회원 프로필", description = "프로필 컴포넌트에 사용 될 api ")
+    @GetMapping("/member/profile/{accountId}")
+    public ResponseEntity<ApiResponse<MemberProfileResponse>> memberProfile(@AuthenticationPrincipal Member member, @PathVariable("accountId") String accountId){
+        MemberProfileResponse memberProfileResponse =memberService.profileService(member,accountId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("요청"+member.getAccountId()+": 프로필", memberProfileResponse));
     }
 
     @Operation(summary = "프로필 수정", description = "회원의 프로필을 수정")

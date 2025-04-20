@@ -35,7 +35,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "members")
@@ -85,6 +84,20 @@ public class Member extends BaseTime implements UserDetails {
     @OneToMany(mappedBy = "following", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Follow> followings = new ArrayList<>();
 
+    @Builder
+    public Member(Long id, String email, String accountId, String nickname, String type, String breed, Integer age, GenderType gender, String address, String profileImageUrl, Role role) {
+        this.id = id;
+        this.email = email;
+        this.accountId = accountId;
+        this.nickname = nickname;
+        this.type = type;
+        this.breed = breed;
+        this.age = age;
+        this.gender = gender;
+        this.address = address;
+        this.profileImageUrl = profileImageUrl;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
