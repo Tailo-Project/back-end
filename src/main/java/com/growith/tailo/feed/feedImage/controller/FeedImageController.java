@@ -8,6 +8,7 @@ import com.growith.tailo.feed.feedImage.dto.response.MemberFeedImageResponse;
 import com.growith.tailo.feed.feedImage.service.FeedPostImageService;
 import com.growith.tailo.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Feed Image Post", description = "피드 이미지 API")
 public class FeedImageController {
 
     private final FeedPostImageService feedPostImageService;

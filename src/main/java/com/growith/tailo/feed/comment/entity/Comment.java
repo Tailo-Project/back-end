@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "comments")
 public class Comment extends BaseTime {
     @Id
+    @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -33,11 +35,19 @@ public class Comment extends BaseTime {
     private FeedPost feedPost;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Member user;
+    @JoinColumn(name = "author_id")
+    private Member author;
 
     @Column(nullable = false)
     private String content;
+
+    @Builder
+    public Comment(Comment parentComment, FeedPost feedPost, Member author, String content) {
+        this.parentComment = parentComment;
+        this.feedPost = feedPost;
+        this.author = author;
+        this.content = content;
+    }
 
 
 }
