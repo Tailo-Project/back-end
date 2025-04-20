@@ -147,7 +147,7 @@ public class FeedPostServiceImpl implements FeedPostService {
         // 게시글 삭제
         feedPostRepository.delete(feedPost);
 
-        return "피드 삭제 성고";
+        return "피드 삭제 성공";
     }
 
 
