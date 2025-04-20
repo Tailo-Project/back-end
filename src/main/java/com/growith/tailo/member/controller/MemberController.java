@@ -57,6 +57,13 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("요청"+member.getAccountId()+": 프로필", memberProfileResponse));
     }
 
+    @Operation(summary = "회원 상세", description = "프로필 수정 페이지 접속 시 표시 될 데이터 용")
+    @GetMapping("/member")
+    public ResponseEntity<ApiResponse<MemberDetailResponse>> detail(@AuthenticationPrincipal Member member){
+        MemberDetailResponse response = memberService.getDetail(member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
+    }
+
     @Operation(summary = "프로필 수정", description = "회원의 프로필을 수정")
     @PatchMapping(value = "/member" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<MemberDetailResponse>> update(@AuthenticationPrincipal Member member,

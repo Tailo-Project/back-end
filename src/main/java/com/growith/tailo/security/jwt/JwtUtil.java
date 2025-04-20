@@ -82,7 +82,7 @@ public class JwtUtil implements Serializable {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            log.warn("만료된 JWT 토큰입니다 재발급 진행: {}", e.getMessage());
+            log.warn("만료된 JWT 토큰입니다: {}", e.getMessage());
             return e.getClaims();
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 파싱 오류 발생", e);

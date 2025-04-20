@@ -94,8 +94,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (memberAccountId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailService.loadUserByUsername(memberAccountId);
 
-            if (!jwtUtil.validateToken(accessToken, userDetails)) {
-                log.info("재발급한 액세스 토큰 컨텍스트 저장 진행");
+            if (jwtUtil.validateToken(accessToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

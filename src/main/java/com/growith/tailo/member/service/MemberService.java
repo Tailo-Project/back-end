@@ -132,6 +132,12 @@ public class MemberService {
 
         return FromMemberMapper.fromMemberDetail(member);
     }
+    public MemberDetailResponse getDetail(Member member){
+        if (member==null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        return FromMemberMapper.fromMemberDetail(member);
+    }
 
     // 이미지 저장
     private String saveImage(MultipartFile profileImage) {
