@@ -3,6 +3,11 @@ spring:
     name: Tailo
   profiles:
     active: local
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 8MB
+      max-request-size: 30MB
 
 ## Swagger
 springdoc:
