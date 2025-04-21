@@ -50,6 +50,7 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                 .where(
                         feedPost.author.id.eq(member.getId()).or(follow.follower.eq(member))
                 )
+                .orderBy(feedPost.createdAt.desc(), feedPost.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .transform(GroupBy.groupBy(feedPost.id).as(
