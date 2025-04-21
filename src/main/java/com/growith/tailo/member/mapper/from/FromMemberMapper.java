@@ -2,6 +2,7 @@ package com.growith.tailo.member.mapper.from;
 
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
+import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
 
 
@@ -13,6 +14,7 @@ public class FromMemberMapper {
                 .accessToken(accessToken)
                 .build();
     }
+
     public static MemberDetailResponse fromMemberDetail(Member member){
         return MemberDetailResponse.builder()
                 .email(member.getEmail())
@@ -27,4 +29,18 @@ public class FromMemberMapper {
                 .createdAt(member.getCreatedAt())
                 .build();
     }
+
+    public static MemberProfileResponse fromMemberProfile(Member member,
+                                                          Long countFollower,
+                                                          Long countFollowing){
+        return MemberProfileResponse.builder()
+                .nickname(member.getNickname())
+                .accountId(member.getAccountId())
+                .countFollower(countFollower)
+                .countFollowing(countFollowing)
+                .profileImageUrl(member.getProfileImageUrl())
+                .isFollow(false)
+                .build();
+    }
+
 }
