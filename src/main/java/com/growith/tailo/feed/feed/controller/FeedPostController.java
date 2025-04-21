@@ -7,7 +7,6 @@ import com.growith.tailo.feed.feed.dto.request.FeedPostRequest;
 import com.growith.tailo.feed.feed.dto.request.FeedUpdateRequest;
 import com.growith.tailo.feed.feed.dto.response.FeedPostListResponse;
 import com.growith.tailo.feed.feed.dto.response.FeedPostResponse;
-
 import com.growith.tailo.feed.feed.service.FeedPostService;
 import com.growith.tailo.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,8 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,12 +65,12 @@ public class FeedPostController {
             summary = "피드 수정",
             description = "이미지와 JSON 데이터를 함께 전송",
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "피드 작성 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "피드 수정 성공"),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
             })
-    @PatchMapping(value = "/{feedNumber}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{feedId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> updateFeedPost(
-            @PathVariable("feedNumber") Long feedNumber,
+            @PathVariable("feedId") Long feedId,
             @RequestPart("feedUpdateRequest") @Valid FeedUpdateRequest feedUpdateRequest,
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal Member member) {
@@ -80,7 +79,7 @@ public class FeedPostController {
             images = new ArrayList<>();
         }
 
-        String result = feedPostService.updateFeedPost(feedNumber, feedUpdateRequest, member, images);
+        String result = feedPostService.updateFeedPost(feedId, feedUpdateRequest, member, images);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 
@@ -107,5 +106,40 @@ public class FeedPostController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
 
     }
+
+    @Operation(
+            summary = "특정 피드 조회",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "특정 피드 조회 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
+            })
+    @GetMapping("/{feedId}")
+    public ResponseEntity<ApiResponse<FeedPostResponse>> getFeedPost(
+            @PathVariable("feedId") Long feedId,
+            @AuthenticationPrincipal Member member) {
+
+        FeedPostResponse result = feedPostService.getFeedPost(feedId, member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
+
+    }
+
+    @Operation(
+
+            summary = "피드 삭제",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "피드 삭제 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
+            })
+
+    @DeleteMapping("/{feedId}")
+    public ResponseEntity<ApiResponse<String>> deleteFeedPost(
+            @PathVariable("feedId") Long feedId,
+            @AuthenticationPrincipal Member member) {
+
+        String result = feedPostService.deleteFeedPost(feedId, member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
+
+    }
+
 
 }

@@ -1,7 +1,8 @@
 package com.growith.tailo.member.dto.response;
 
-public record MemberListResponse(String nickname,
+public record MemberListResponse(Long id,
+                                 String nickname,
                                  String accountId,
                                  String profileImageUrl,
-                                 boolean isFollowing) {
+                                 boolean isFollow) {
 }

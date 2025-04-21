@@ -1,5 +1,6 @@
 package com.growith.tailo.feed.feedImage.entity;
 
+import com.growith.tailo.common.entity.BaseTime;
 import com.growith.tailo.feed.feed.entity.FeedPost;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "feed_post_images")
-public class FeedPostImage {
+public class FeedPostImage extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

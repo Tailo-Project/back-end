@@ -1,19 +1,20 @@
 package com.growith.tailo.block.service;
 
-import com.growith.tailo.block.dto.response.BlockListResponse;
+import com.growith.tailo.block.dto.response.BlockResponse;
 import com.growith.tailo.block.entity.BlockMember;
 import com.growith.tailo.block.repository.BlockRepository;
-import com.growith.tailo.common.dto.response.ApiResponse;
 import com.growith.tailo.common.exception.ResourceAlreadyExistException;
 import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,19 +25,10 @@ public class BlockService {
     private final MemberRepository memberRepository;
 
     // 차단된 사용자 목록을 반환하는 메서드
-    public List<BlockListResponse> getListService(Member member) {
-        // BlockRepository의 findAllBlockMember 메서드를 호출하여 차단된 사용자 목록을 가져옴
-        List<BlockMember> blockList = blockRepository.findAllBlockedMember(member);
-
-        // 차단된 사용자 목록이 없으면 빈 리스트 반환
-        if (blockList.isEmpty()) {
-            return List.of();
-        }
-
-        // BlockMember 엔티티를 BlockListResponse DTO로 변환하여 반환
-        return blockList.stream()
-                .map(BlockListResponse::fromBlockMember)
-                .collect(Collectors.toList());
+    @Transactional
+    public Page<BlockResponse> getListService(Member member, Pageable pageable) {
+        return blockRepository.countBlockMemberByBlocker(member) == 0 ? Page.empty()
+                : blockRepository.findAllBlockedMember(member,pageable);
     }
     // 사용자 차단
     public String blockingMemberService(Member member, String accountId){

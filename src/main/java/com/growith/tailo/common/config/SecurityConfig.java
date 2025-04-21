@@ -1,7 +1,7 @@
 package com.growith.tailo.common.config;
 
-import com.growith.tailo.security.jwt.JwtAuthenticationEntryPoint;
-import com.growith.tailo.security.jwt.JwtAuthenticationFilter;
+import com.growith.tailo.security.jwt.component.JwtAuthenticationEntryPoint;
+import com.growith.tailo.security.jwt.component.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

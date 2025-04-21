@@ -8,4 +8,6 @@ import org.springframework.data.domain.Pageable;
 public interface FeedPostCustomRepository {
 
     Page<FeedPostResponse> getFeedPostList(Member member, Pageable pageable);
+
+    FeedPostResponse getFeedPost(Long feedId);
 }

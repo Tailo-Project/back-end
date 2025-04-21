@@ -1,6 +1,7 @@
 package com.growith.tailo.common.config;
 
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,8 +15,8 @@ public class QueryDSLConfiguration {
     private EntityManager entityManager;
 
     @Bean
-    public JPAQueryFactory jpaQueryFactory(){
-        return new JPAQueryFactory(entityManager);
+    public JPAQueryFactory jpaQueryFactory() {
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
     }
 
 }

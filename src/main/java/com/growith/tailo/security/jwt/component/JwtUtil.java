@@ -1,4 +1,4 @@
-package com.growith.tailo.security.jwt;
+package com.growith.tailo.security.jwt.component;
 
 import com.growith.tailo.member.entity.Member;
 import io.jsonwebtoken.Claims;
@@ -72,7 +72,6 @@ public class JwtUtil implements Serializable {
 
 
     //JWT 토큰에서 모든 Claims 추출
-
     private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException {
         try {
             log.debug("토큰에서 모든 Claims 파싱 시도");
@@ -84,7 +83,7 @@ public class JwtUtil implements Serializable {
                     .getBody();
         } catch (ExpiredJwtException e) {
             log.warn("만료된 JWT 토큰입니다: {}", e.getMessage());
-            throw e;
+            return e.getClaims();
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 파싱 오류 발생", e);
             throw new RuntimeException("잘못된 JWT 토큰입니다.");
