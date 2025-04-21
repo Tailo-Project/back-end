@@ -4,5 +4,5 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Builder
-public record LoginResponse(String email, String accessToken){
+public record LoginResponse(String email,String accountId, String accessToken){
 }

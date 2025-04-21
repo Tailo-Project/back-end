@@ -7,10 +7,11 @@ import com.growith.tailo.member.entity.Member;
 
 
 public class FromMemberMapper {
-    public static LoginResponse fromMemberLogin(String email, String accessToken){
+    public static LoginResponse fromMemberLogin(String email, String accountId,String accessToken){
         return LoginResponse
                 .builder()
                 .email(email)
+                .accountId(accountId)
                 .accessToken(accessToken)
                 .build();
     }
