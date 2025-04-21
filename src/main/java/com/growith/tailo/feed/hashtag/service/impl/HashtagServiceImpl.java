@@ -52,7 +52,7 @@ public class HashtagServiceImpl implements HashtagService {
         }
     }
 
-    // 해시 업데이트
+    // 해시 수정 handler
     @Override
     @Transactional
     public void updateHashtagHandler(List<HashtagDto> updatedHashtags, FeedPost feedPost) {
@@ -81,6 +81,16 @@ public class HashtagServiceImpl implements HashtagService {
 
         for (String registerHashtagName : registerHashtagNames) {
             registerHashtag(registerHashtagName, feedPost);
+        }
+    }
+
+    // 해시 삭제 hadler
+    @Override
+    public void deleteHashtagHandler(FeedPost feedPost) {
+        List<FeedPostHashtag> feedPostHashtags = feedPostHashtagRepository.findByFeedPost(feedPost);
+        for (FeedPostHashtag feedPostHashtag : feedPostHashtags) {
+            String hashtag = feedPostHashtag.getHashtags().getHashtag();
+            deleteHashtag(hashtag, feedPost);
         }
     }
 
