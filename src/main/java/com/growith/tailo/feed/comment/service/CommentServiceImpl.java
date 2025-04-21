@@ -1,7 +1,8 @@
 package com.growith.tailo.feed.comment.service;
 
 import com.growith.tailo.common.exception.ResourceNotFoundException;
-import com.growith.tailo.feed.comment.dto.CommentRequest;
+import com.growith.tailo.feed.comment.dto.request.CommentRequest;
+import com.growith.tailo.feed.comment.dto.response.CommentResponse;
 import com.growith.tailo.feed.comment.entity.Comment;
 import com.growith.tailo.feed.comment.repository.CommentRepository;
 import com.growith.tailo.feed.feed.entity.FeedPost;
@@ -10,6 +11,8 @@ import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +61,21 @@ public class CommentServiceImpl implements CommentService {
         return "댓글 등록 성공";
     }
 
+    // 댓글 목록 조회
+    @Override
+    public Page<CommentResponse> getCommentList(Long feedId, Member member, Pageable pageable) {
+
+        if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        FeedPost feedPost = feedPostRepository.findById(feedId)
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 피드입니다."));
+
+
+        return commentRepository.getCommentList(feedPost, member, pageable);
+    }
+
     // 댓글 삭제
     @Override
     @Transactional
@@ -90,4 +108,5 @@ public class CommentServiceImpl implements CommentService {
 
         return "댓글 삭제 성공";
     }
+
 }

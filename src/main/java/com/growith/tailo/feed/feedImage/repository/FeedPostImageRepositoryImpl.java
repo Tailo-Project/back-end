@@ -11,12 +11,14 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class FeedPostImageRepositoryImpl implements FeedPostImageCustomRepository {
 
@@ -46,7 +48,7 @@ public class FeedPostImageRepositoryImpl implements FeedPostImageCustomRepositor
                 .select(Projections.constructor(MemberFeedImageResponse.class,
                         feedPostImage.feedPost.id,
                         feedPostImage.imageUrl,
-                        feedPostImage.createdAt
+                        feedPost.createdAt
                 ))
                 .from(feedPostImage)
                 .join(feedPostImage.feedPost, feedPost)
@@ -65,6 +67,7 @@ public class FeedPostImageRepositoryImpl implements FeedPostImageCustomRepositor
                                         .where(blockMember.blocker.id.eq(loginMember.getId()))
                         )
                 )
+                .orderBy(feedPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -82,6 +85,8 @@ public class FeedPostImageRepositoryImpl implements FeedPostImageCustomRepositor
                         )
                 )
                 .fetchOne();
+
+        log.info("total : " + total + " comments :" + content.size());
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
