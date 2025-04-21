@@ -1,4 +1,4 @@
-package com.growith.tailo.security.jwt;
+package com.growith.tailo.security.jwt.component;
 
 import com.growith.tailo.member.entity.Member;
 import io.jsonwebtoken.Claims;

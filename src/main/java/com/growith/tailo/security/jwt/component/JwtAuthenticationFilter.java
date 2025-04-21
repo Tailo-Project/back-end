@@ -1,8 +1,9 @@
-package com.growith.tailo.security.jwt;
+package com.growith.tailo.security.jwt.component;
 
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.security.jwt.entity.RefreshToken;
 import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
+import com.growith.tailo.security.jwt.service.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
