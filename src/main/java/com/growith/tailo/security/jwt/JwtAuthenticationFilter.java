@@ -30,77 +30,84 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
 
-
-    private String tokenPrefix="Bearer ";
-
-    // 매 요청마다 실행 JWT 검사 및 인증을 처리 하는 메서드
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 요청 헤더에서 토큰 추출
-        String header = request.getHeader("Authorization");
-        String memberAccountId = null;
-        String accessToken = null;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-        if (header!=null&&header.startsWith(tokenPrefix)){
-            // 토큰 접두사 제거
+        String header = request.getHeader("Authorization");
+        String accessToken = null;
+        String memberAccountId = null;
+        String tokenPrefix = "Bearer ";
+
+        if (header != null && header.startsWith(tokenPrefix)) {
             accessToken = header.substring(tokenPrefix.length());
-            try{
-                // 토큰에서 사용자 accountId 추출
-                memberAccountId = this.jwtUtil.getUsernameFromToken(accessToken);
-                log.info("토큰 사용자 추출 : {} ", memberAccountId);
-                // 액세스 토큰 만료 시 실행
-            }catch (ExpiredJwtException e){
-                log.error("액세스 토큰 만료 , 리프레시 토큰 확인");
+
+            try {
+                // 액세스 토큰에서 사용자 ID 추출
+                memberAccountId = jwtUtil.getUsernameFromToken(accessToken);
+                log.info("정상 토큰, 사용자 추출: {}", memberAccountId);
+
+            } catch (ExpiredJwtException e) {
+                log.warn("액세스 토큰 만료: {}", e.getMessage());
                 memberAccountId = e.getClaims().getSubject();
-                log.info("토큰 확인 memberAccountI: {}",memberAccountId);
-                // 리프레시 토큰 확인
-                Optional<RefreshToken> refreshTokenValid = refreshTokenRepository.findByAccountId(memberAccountId);
-                // 리프레시 토큰이 존재하고 리프레시 토큰이 유효한 경우
-                if (refreshTokenValid.isPresent() && this.jwtUtil.validateRefreshToken(refreshTokenValid.get().getToken())){
-                    // 새로운 액세스 토큰 생성 로직 진행
-                    UserDetails userDetails = this.userDetailService.loadUserByUsername(memberAccountId);
-                    String newAccessToken = this.jwtUtil.generateAccessToken((Member) userDetails);
-                    // 헤더에 반환
-                    response.setHeader("Authorization",tokenPrefix+newAccessToken);
-                    log.info("새로운 AccessToken 발급 : {}",newAccessToken);
-                }else {
-                    // 리프레시 토큰이 유효하지 않을 경우 실행
-                    log.error("유효한 리프레시 토큰 없음");
+
+                Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByAccountId(memberAccountId);
+
+                if (optionalRefreshToken.isPresent() &&
+                        jwtUtil.validateRefreshToken(optionalRefreshToken.get().getToken())) {
+
+                    log.info("리프레시 토큰 유효, 새 액세스 토큰 발급 진행");
+
+                    UserDetails userDetails = userDetailService.loadUserByUsername(memberAccountId);
+                    String newAccessToken = jwtUtil.generateAccessToken((Member) userDetails);
+
+                    // 클라이언트에 새 토큰 전달
+                    response.setHeader("Authorization", tokenPrefix + newAccessToken);
+                    log.info("새로운 AccessToken 발급 완료: {}", newAccessToken);
+
+                    //  인증 객체 SecurityContext 에 등록
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                } else {
+                    log.error("리프레시 토큰이 존재하지 않거나 유효하지 않음");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("로그인이 만료되었습니다. 다시 로그인 해주세요");
+                    response.getWriter().write("로그인이 만료되었습니다. 다시 로그인 해주세요.");
+                    response.getWriter().flush();
                     return;
                 }
-                // 미 처리 오류 발생
-            }catch (Exception e){
-                log.error("토큰 검증 오류", e );
+
+            } catch (Exception e) {
+                log.error("액세스 토큰 검증 오류", e);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("토큰 검증 오류");
+                response.getWriter().write("토큰 검증 중 오류가 발생했습니다.");
+                response.getWriter().flush();
                 return;
             }
-        }else {
-            log.warn("토큰이 헤더에 포함되어 있지 않거나 잘못된 형식");
+        } else {
+            log.debug("Authorization 헤더 없음 또는 잘못된 형식");
         }
-        // 사용자 아이디가 존재하고 Security Context 에 인증 정보가 null 일 때
-        if (memberAccountId != null && SecurityContextHolder.getContext().getAuthentication()==null){
-            // 사용자 정보 로드
-            UserDetails userDetails = this.userDetailService.loadUserByUsername(memberAccountId);
-            //토큰 유효성 검증
-            if(this.jwtUtil.validateToken(accessToken,userDetails)){
-                //새로운 인증 토큰 생성
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                //인증 세부정보 설정
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Security Context 에 인증 정보 저장
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }else{
-                // 토큰이 유효하지 않을 경우 처리
+        // 인증 정보가 없다면 인증 객체 설정 (최초 인증 요청일 경우)
+        if (memberAccountId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailService.loadUserByUsername(memberAccountId);
+
+            if (jwtUtil.validateToken(accessToken, userDetails)) {
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                log.warn("토큰은 존재하나 유효성 검증 실패");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("인증 정보가 유효하지 않습니다.");
+                response.getWriter().flush();
+                return;
             }
         }
-        // 필터체인 계속 진행
-        filterChain.doFilter(request,response);
+
+        filterChain.doFilter(request, response);
     }
 }

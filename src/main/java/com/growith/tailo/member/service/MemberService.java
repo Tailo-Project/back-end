@@ -3,12 +3,14 @@ package com.growith.tailo.member.service;
 import com.growith.tailo.common.exception.ResourceAlreadyExistException;
 import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.common.handler.ImageUploadHandler;
+import com.growith.tailo.follow.repository.FollowRepository;
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
 import com.growith.tailo.member.dto.response.LoginResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
+import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.mapper.from.FromMemberMapper;
 import com.growith.tailo.member.mapper.to.ToMemberMapper;
@@ -34,7 +36,7 @@ public class MemberService {
     private final OAuth2Service oAuth2Service;
     private final JwtUtil jwtUtil;
     private final ImageUploadHandler imageUploadHandler;
-
+    private final FollowRepository followRepository;
     @Transactional
     public LoginResponse socialLoginService(SocialLoginRequest request) {
         String email;
@@ -89,6 +91,18 @@ public class MemberService {
         }
     }
 
+    public MemberProfileResponse profileService(Member member, String accountId ){
+        if(!member.getAccountId().equals(accountId)){
+            Member target = memberRepository.findByAccountId(accountId).orElseThrow(
+                    ()->new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
+            if(followRepository.existsByFollowerAndFollowing(member,target)){
+                MemberProfileResponse profileResponse = memberRepository.findByMemberProfile(accountId);
+                return profileResponse.toBuilder().isFollow(true).build();
+            }
+        }
+        return memberRepository.findByMemberProfile(accountId);
+    }
+
     @Transactional
     public MemberDetailResponse updateProfile(Member member, UpdateRequest updateRequest, MultipartFile profileImage) {
         if (member == null || !memberRepository.existsById(member.getId())) {
@@ -116,6 +130,12 @@ public class MemberService {
         // DB에 저장
         memberRepository.save(member);
 
+        return FromMemberMapper.fromMemberDetail(member);
+    }
+    public MemberDetailResponse getDetail(Member member){
+        if (member==null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         return FromMemberMapper.fromMemberDetail(member);
     }
 
