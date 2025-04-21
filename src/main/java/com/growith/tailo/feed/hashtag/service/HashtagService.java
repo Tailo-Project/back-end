@@ -9,4 +9,6 @@ public interface HashtagService {
     void linkHashtagsToPost(List<HashtagDto> hashtagList, FeedPost feedPost);
 
     void updateHashtagHandler(List<HashtagDto> updatedHashtags, FeedPost feedPost);
+
+    void deleteHashtagHandler(FeedPost feedPost);
 }

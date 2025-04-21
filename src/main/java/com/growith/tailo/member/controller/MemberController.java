@@ -17,7 +17,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Member", description = "회원 관리 API")
@@ -34,13 +41,14 @@ public class MemberController {
         LoginResponse loginResponse = memberService.socialLoginService(request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(loginResponse));
     }
+
     @Operation(summary = "회원가입", description = "JSON과 프로필 이미지를 함께 전송합니다.")
     @PostMapping(value = "/auth/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> signUp(
             @RequestPart("request") SignUpRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
-    )  {
-        String message = memberService.signUpService(request,profileImage);
+    ) {
+        String message = memberService.signUpService(request, profileImage);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponses.created(message));
     }
 
@@ -65,11 +73,11 @@ public class MemberController {
     }
 
     @Operation(summary = "프로필 수정", description = "회원의 프로필을 수정")
-    @PatchMapping(value = "/member" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/member", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<MemberDetailResponse>> update(@AuthenticationPrincipal Member member,
                                                                     @RequestPart("request") UpdateRequest updateRequest,
-                                                                    @RequestPart(value = "profileImage", required = false)MultipartFile profileImage) {
-        MemberDetailResponse response = memberService.updateProfile(member, updateRequest,profileImage);
+                                                                    @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+        MemberDetailResponse response = memberService.updateProfile(member, updateRequest, profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
     }
 }

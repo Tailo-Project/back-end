@@ -1,12 +1,18 @@
 package com.growith.tailo.feed.feedImage.service.impl;
 
+import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.common.handler.ImageUploadHandler;
 import com.growith.tailo.feed.feed.entity.FeedPost;
+import com.growith.tailo.feed.feedImage.dto.response.MemberFeedImageResponse;
 import com.growith.tailo.feed.feedImage.entity.FeedPostImage;
 import com.growith.tailo.feed.feedImage.repository.FeedPostImageRepository;
 import com.growith.tailo.feed.feedImage.service.FeedPostImageService;
+import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +26,7 @@ import java.util.List;
 @Slf4j
 public class FeedPostImageServiceImpl implements FeedPostImageService {
 
+    private final MemberRepository memberRepository;
     private final FeedPostImageRepository feedPostImageRepository;
 
     private final ImageUploadHandler imageUploadHandler;
@@ -42,16 +49,27 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
         feedPostImageRepository.saveAll(feedPostImages);
     }
 
+    // MultipartFile -> Url (클라우드 저장)
+    @Override
+    public List<String> convertImageToUrls(List<MultipartFile> images) {
+        return imageUploadHandler.uploadMultiImages(images);
+    }
+
     // 특정 피드의 이미지 목록 조회
     @Override
     public List<String> getImageUrls(FeedPost feedPost) {
         return feedPostImageRepository.findImageUrlsByFeedPost(feedPost);
     }
 
-    // MultipartFile -> Url (클라우드 저장)
+    // 특정 사용자 피드 이미지 목록 조회
     @Override
-    public List<String> convertImageToUrls(List<MultipartFile> images) {
-        return imageUploadHandler.uploadMultiImages(images);
+    public Page<MemberFeedImageResponse> getMemberFeedImageList(Member member, Pageable pageable, Long accountId) {
+
+        if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        return feedPostImageRepository.getMemberFeedImageList(member, pageable, accountId);
     }
 
     // 게시물 수정에 따른 이미지 처리
@@ -73,6 +91,18 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
         if (!newImages.isEmpty()) {
             registerImage(newImageUrls, feedPost);
         }
+    }
+
+    // 이미지 삭제
+    @Override
+    @Transactional
+    public void deleteImagesByFeedPost(FeedPost feedPost) {
+        List<FeedPostImage> images = feedPostImageRepository.findByFeedPost(feedPost);
+
+        for (FeedPostImage image : images) {
+            imageUploadHandler.deleteImage(image.getImageUrl());
+        }
+        feedPostImageRepository.deleteByFeedPost(feedPost);
     }
 
     // 사용하지 않는 이미지 삭제
