@@ -1,7 +1,6 @@
-package com.growith.tailo.security.jwt;
+package com.growith.tailo.security.jwt.service;
 
 import com.growith.tailo.common.exception.ResourceNotFoundException;
-import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

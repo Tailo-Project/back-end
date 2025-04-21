@@ -16,7 +16,7 @@ import com.growith.tailo.member.mapper.from.FromMemberMapper;
 import com.growith.tailo.member.mapper.to.ToMemberMapper;
 import com.growith.tailo.member.oauth.OAuth2Service;
 import com.growith.tailo.member.repository.MemberRepository;
-import com.growith.tailo.security.jwt.JwtUtil;
+import com.growith.tailo.security.jwt.component.JwtUtil;
 import com.growith.tailo.security.jwt.entity.RefreshToken;
 import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,6 @@ public class MemberService {
     @Transactional
     public LoginResponse socialLoginService(SocialLoginRequest request) {
         String email;
-
         if ("google".equals(request.provider())) {
             email = oAuth2Service.validateIdToken(request.accessToken());
         } else if ("kakao".equals(request.provider())) {
@@ -50,12 +49,12 @@ public class MemberService {
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "지원하지 않는 로그인 방식");
         }
-
+        // 최초 로그인
         Member member = memberRepository.findByEmail(email).orElse(null);
         if (member == null) {
-            return FromMemberMapper.fromMemberLogin(email, null);
+            return FromMemberMapper.fromMemberLogin(email,null,null);
         }
-
+        String accountId = member.getAccountId();
         String accessToken = jwtUtil.generateAccessToken(member);
         String refreshToken = jwtUtil.generateRefreshToken(member);
 
@@ -66,23 +65,35 @@ public class MemberService {
                 .token(refreshToken)
                 .build());
 
-        return new LoginResponse(email, accessToken);
+        return new LoginResponse(email,accountId,accessToken);
     }
 
     @Transactional
-    public String signUpService(SignUpRequest signUpRequest, MultipartFile profileImage) {
+    public LoginResponse signUpService(SignUpRequest signUpRequest, MultipartFile profileImage) {
         validateAccountId(signUpRequest.accountId());
         String imageUrl = null;
 
         // 이미지 저장
         if (profileImage != null && !profileImage.isEmpty()) {
             imageUrl = saveImage(profileImage); // 이미지를 저장하고 URL을 할당
+            log.info("이미지 저장 url:{}",imageUrl);
         }
 
         Member signUpMember = ToMemberMapper.signUpToEntity(signUpRequest, imageUrl);
         memberRepository.save(signUpMember);
+        String accessToken = jwtUtil.generateAccessToken(signUpMember);
+        String refreshToken = jwtUtil.generateRefreshToken(signUpMember);
+        String email = signUpMember.getEmail();
+        String signUpAccountId=signUpMember.getAccountId();
+        refreshTokenRepository.findByAccountId(signUpAccountId)
+                .ifPresent(refreshTokenRepository::delete);
+        refreshTokenRepository.save(RefreshToken.builder()
+                .accountId(signUpAccountId)
+                .token(refreshToken)
+                .build());
 
-        return "회원 가입 성공";
+        return new LoginResponse(email, signUpAccountId, accessToken);
+
     }
 
     public void validateAccountId(String accountId) {

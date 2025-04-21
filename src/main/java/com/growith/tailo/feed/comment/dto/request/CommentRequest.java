@@ -1,4 +1,4 @@
-package com.growith.tailo.feed.comment.dto;
+package com.growith.tailo.feed.comment.dto.request;
 
 import com.growith.tailo.feed.comment.entity.Comment;
 import com.growith.tailo.feed.feed.entity.FeedPost;
