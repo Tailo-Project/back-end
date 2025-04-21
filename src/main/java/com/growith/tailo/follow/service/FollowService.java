@@ -26,10 +26,13 @@ public class FollowService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void followService(Member member, String accountId){
+    public void follow(Member member, String accountId){
         Member target = findTarget(accountId);
         if(member.getAccountId().equals(accountId)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"본인은 팔로우할 수 없습니다.");
+        }
+        if(followRepository.existsByFollowerAndFollowing(member,target)){
+            throw new ResourceAlreadyExistException("이미 팔로우 된 상태입니다.");
         }
         Follow follow = Follow.builder()
                 .follower(member)

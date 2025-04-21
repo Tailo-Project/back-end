@@ -16,7 +16,7 @@ import com.growith.tailo.member.mapper.from.FromMemberMapper;
 import com.growith.tailo.member.mapper.to.ToMemberMapper;
 import com.growith.tailo.member.oauth.OAuth2Service;
 import com.growith.tailo.member.repository.MemberRepository;
-import com.growith.tailo.security.jwt.JwtUtil;
+import com.growith.tailo.security.jwt.component.JwtUtil;
 import com.growith.tailo.security.jwt.entity.RefreshToken;
 import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;

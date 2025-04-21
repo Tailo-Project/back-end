@@ -1,4 +1,4 @@
-package com.growith.tailo.security.jwt;
+package com.growith.tailo.security.jwt.component;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
