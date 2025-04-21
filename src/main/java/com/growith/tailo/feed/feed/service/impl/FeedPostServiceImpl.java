@@ -85,6 +85,18 @@ public class FeedPostServiceImpl implements FeedPostService {
 
     }
 
+    // 특정 피드 조회 (상세 조회)
+    @Override
+    public FeedPostResponse getFeedPost(Long feedId, Member member) {
+        if (member == null || !memberRepository.existsByAccountId(member.getAccountId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        FeedPostResponse result = feedPostRepository.getFeedPost(feedId);
+
+        return result;
+    }
+
     // 피드 수정
     @Override
     @Transactional
@@ -148,6 +160,7 @@ public class FeedPostServiceImpl implements FeedPostService {
         feedPostRepository.delete(feedPost);
 
         return "피드 삭제 성공";
+
     }
 
 

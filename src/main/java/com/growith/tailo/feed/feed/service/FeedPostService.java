@@ -19,4 +19,6 @@ public interface FeedPostService {
     Page<FeedPostResponse> getFeedPostList(Member member, Pageable pageable);
 
     String deleteFeedPost(Long feedId, Member member);
+
+    FeedPostResponse getFeedPost(Long feedId, Member member);
 }

@@ -1,5 +1,6 @@
 package com.growith.tailo.feed.feed.repository;
 
+import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.feed.comment.entity.QComment;
 import com.growith.tailo.feed.feed.dto.response.FeedPostResponse;
 import com.growith.tailo.feed.feed.entity.QFeedPost;
@@ -82,5 +83,49 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                 .fetchOne();
 
         return PageableExecutionUtils.getPage(feeds, pageable, () -> total);
+    }
+
+    @Override
+    public FeedPostResponse getFeedPost(Long feedId) {
+        QFeedPost feedPost = QFeedPost.feedPost;
+        QComment comment = QComment.comment;
+        QPostLike postLike = QPostLike.postLike;
+        QHashtags hashtags = QHashtags.hashtags;
+        QFeedPostImage feedImage = QFeedPostImage.feedPostImage;
+        QFeedPostHashtag feedPostHashtag = QFeedPostHashtag.feedPostHashtag;
+        QFollow follow = QFollow.follow;
+
+        FeedPostResponse result = jpaQueryFactory
+                .from(feedPost)
+                .leftJoin(feedImage).on(feedImage.feedPost.eq(feedPost))
+                .leftJoin(feedPostHashtag).on(feedPostHashtag.feedPost.eq(feedPost))
+                .leftJoin(hashtags).on(hashtags.id.eq(feedPostHashtag.hashtags.id))
+                .where(
+                        feedPost.id.eq(feedId)
+                )
+                .transform(GroupBy.groupBy(feedPost.id).as(
+                        Projections.constructor(FeedPostResponse.class,
+                                feedPost.id,
+                                feedPost.content,
+                                feedPost.author.nickname,
+                                feedPost.author.profileImageUrl,
+                                GroupBy.list(feedImage.imageUrl),
+                                GroupBy.list(hashtags.hashtag),
+                                feedPost.createdAt,
+                                feedPost.updatedAt,
+                                JPAExpressions.select(postLike.count())
+                                        .from(postLike)
+                                        .where(postLike.feedPost.eq(feedPost)),
+                                JPAExpressions.select(comment.count())
+                                        .from(comment)
+                                        .where(comment.feedPost.eq(feedPost))
+                        )
+                )).get(feedId);
+
+        if (result == null) {
+            throw new ResourceNotFoundException("해당 피드가 존재하지 않습니다.");
+        }
+
+        return result;
     }
 }
