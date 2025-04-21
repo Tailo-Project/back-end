@@ -40,8 +40,10 @@ public class FollowService {
     @Transactional
     public void followCancel(Member member, String accountId){
         Member target = findTarget(accountId);
-        if (followRepository.existsByFollowerAndFollowing(member,target)){
-            throw new ResourceAlreadyExistException("팔로우 취소 완료");
+
+        if (!followRepository.existsByFollowerAndFollowing(member,target)){
+            throw new ResourceAlreadyExistException("팔로우 상태가 아닙니다.");
+
         }
         followRepository.deleteByFollowerAndFollowing(member,target);
     }
