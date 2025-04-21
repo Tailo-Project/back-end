@@ -49,7 +49,6 @@ public class MemberController {
              @RequestPart("request") SignUpRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
-        System.out.print(profileImage.getOriginalFilename());
         LoginResponse loginResponse = memberService.signUpService(request,profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(loginResponse));
     }
