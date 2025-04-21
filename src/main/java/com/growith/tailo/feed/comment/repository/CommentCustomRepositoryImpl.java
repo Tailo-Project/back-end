@@ -3,6 +3,7 @@ package com.growith.tailo.feed.comment.repository;
 import com.growith.tailo.feed.comment.dto.response.CommentResponse;
 import com.growith.tailo.feed.comment.dto.response.ReplyListResponse;
 import com.growith.tailo.feed.comment.dto.response.ReplyResponse;
+import com.growith.tailo.feed.comment.entity.Comment;
 import com.growith.tailo.feed.comment.entity.QComment;
 import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.member.entity.Member;
@@ -61,6 +62,37 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
         log.debug("total : " + total + " comments :" + comments.size());
 
         return PageableExecutionUtils.getPage(resultComments, pageable, () -> total);
+    }
+
+    @Override
+    public Page<ReplyResponse> getReplyList(FeedPost feedPost, Comment parentComment, Pageable pageable) {
+        QComment reply = QComment.comment;
+
+        List<ReplyResponse> replies = jpaQueryFactory
+                .select(Projections.constructor(ReplyResponse.class,
+                        reply.id,
+                        reply.content,
+                        reply.author.nickname,
+                        reply.author.profileImageUrl,
+                        reply.createdAt
+                ))
+                .from(reply)
+                .where(reply.parentComment.id.eq(parentComment.getId()))
+                .orderBy(reply.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        int total = jpaQueryFactory
+                .select(reply.count())
+                .from(reply)
+                .where(reply.parentComment.id.eq(parentComment.getId()))
+                .fetchOne()
+                .intValue();
+
+        log.info("total : " + total + " comments :" + replies.size());
+
+        return PageableExecutionUtils.getPage(replies, pageable, () -> total);
     }
 
     private ReplyListResponse getReplyForComment(Long commentId) {

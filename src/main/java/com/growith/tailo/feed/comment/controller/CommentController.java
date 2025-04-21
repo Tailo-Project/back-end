@@ -6,6 +6,8 @@ import com.growith.tailo.common.util.ApiResponses;
 import com.growith.tailo.feed.comment.dto.request.CommentRequest;
 import com.growith.tailo.feed.comment.dto.response.CommentListResponse;
 import com.growith.tailo.feed.comment.dto.response.CommentResponse;
+import com.growith.tailo.feed.comment.dto.response.ReplyResponse;
+import com.growith.tailo.feed.comment.dto.response.ReplyTotalListResponse;
 import com.growith.tailo.feed.comment.service.CommentService;
 import com.growith.tailo.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,6 +77,33 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.created("댓글 목록 조회 성공", result));
     }
+
+    @Operation(
+            summary = "대댓글 목록 조회 (더보기)",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "대댓글 목록 조회 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
+            })
+    @GetMapping("/{feedId}/comments/{commentId}/replies")
+    public ResponseEntity<ApiResponse<ReplyTotalListResponse>> getReplyList(
+            @PathVariable("feedId") Long feedId,
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal Member member,
+            Pageable pageable
+    ) {
+
+        Page<ReplyResponse> replyList = commentService.getReplyList(feedId, commentId, member, pageable);
+
+        ReplyTotalListResponse result = new ReplyTotalListResponse(replyList.getContent(), new Pagination(
+                replyList.getNumber(),
+                replyList.getSize(),
+                replyList.getTotalPages(),
+                replyList.getTotalElements()
+        ));
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.created("대댓글 목록 조회 성공", result));
+    }
+
 
     @Operation(
             summary = "댓글 삭제",

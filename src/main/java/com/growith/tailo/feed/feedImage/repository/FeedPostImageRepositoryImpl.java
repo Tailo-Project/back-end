@@ -86,7 +86,7 @@ public class FeedPostImageRepositoryImpl implements FeedPostImageCustomRepositor
                 )
                 .fetchOne();
 
-        log.info("total : " + total + " comments :" + content.size());
+        log.debug("특정 사용자 이미지 조회 - total : " + total + " comments :" + content.size());
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
