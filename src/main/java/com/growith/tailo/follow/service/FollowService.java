@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
@@ -44,7 +45,6 @@ public class FollowService {
         }
         followRepository.deleteByFollowerAndFollowing(member,target);
     }
-    @Transactional
     public Page<MyFollowResponse> getFollowList(String accountId, Pageable pageable) {
         Member member = findTarget(accountId);
 
@@ -53,7 +53,6 @@ public class FollowService {
 
     }
 
-    @Transactional
     public Page<FollowMeResponse> getTargetList(String accountId, Pageable pageable) {
         Member member = findTarget(accountId);
 
