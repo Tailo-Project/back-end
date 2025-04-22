@@ -27,7 +27,7 @@ public class FollowController {
     @Operation(summary = "팔로우 요청", description = "상대방을 팔로우 하는 요청입니다.")
     @PostMapping("/{accountId}")
     public ResponseEntity<ApiResponse<Void>> memberFollow(@AuthenticationPrincipal Member member,@PathVariable("accountId") String accountId){
-        followService.followService(member,accountId);
+        followService.follow(member,accountId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success());
     }
 

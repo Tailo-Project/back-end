@@ -54,7 +54,7 @@ public class CommentController {
     }
 
     @Operation(
-            summary = "댓글 목록 조회",
+            summary = "댓글 목록 조회 (대댓글이 있을 경우 3개까지 미리보기)",
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "댓글 목록 조회 성공"),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청")
