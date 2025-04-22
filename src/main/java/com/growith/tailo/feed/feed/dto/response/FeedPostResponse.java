@@ -6,6 +6,7 @@ import java.util.List;
 public record FeedPostResponse(
         Long feedId,
         String content,
+        String accountId,
         String authorNickname,
         String authorProfile,
         List<String> imageUrls,
