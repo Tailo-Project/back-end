@@ -100,7 +100,6 @@ public class JwtUtil implements Serializable {
 
 
     // Access Token 생성
-
     public String generateAccessToken(Member member) {
         log.info("Access Token 생성 시작 for 사용자: {}", member.getUsername());
         Map<String, Object> claims = new HashMap<>();

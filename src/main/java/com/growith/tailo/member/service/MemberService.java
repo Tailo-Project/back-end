@@ -8,7 +8,7 @@ import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
-import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.dto.response.AuthResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
@@ -38,7 +38,7 @@ public class MemberService {
     private final ImageUploadHandler imageUploadHandler;
     private final FollowRepository followRepository;
     @Transactional
-    public LoginResponse socialLoginService(SocialLoginRequest request) {
+    public AuthResponse socialLoginService(SocialLoginRequest request) {
         String email;
         if ("google".equals(request.provider())) {
             email = oAuth2Service.validateIdToken(request.accessToken());
@@ -65,11 +65,11 @@ public class MemberService {
                 .token(refreshToken)
                 .build());
 
-        return new LoginResponse(email,accountId,accessToken);
+        return new AuthResponse(email,accountId,accessToken);
     }
 
     @Transactional
-    public LoginResponse signUpService(SignUpRequest signUpRequest, MultipartFile profileImage) {
+    public AuthResponse signUpService(SignUpRequest signUpRequest, MultipartFile profileImage) {
         validateAccountId(signUpRequest.accountId());
         String imageUrl = null;
 
@@ -92,7 +92,7 @@ public class MemberService {
                 .token(refreshToken)
                 .build());
 
-        return new LoginResponse(email, signUpAccountId, accessToken);
+        return new AuthResponse(email, signUpAccountId, accessToken);
 
     }
 
