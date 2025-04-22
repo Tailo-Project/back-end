@@ -1,21 +1,26 @@
 spring:
-  application:
-    name: Tailo
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL 드라이버
-    url: jdbc:mysql://localhost:3306/tailo_db  # RDS 엔드포인트와 DB 이름
-    username: ${DB_USERNAME}  # 환경변수로 MySQL 사용자명 설정
-    password: ${DB_PASSWORD}  # 환경변수로 MySQL 비밀번호 설정
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect  # MySQL Dialect 사용
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: update  # 개발 단계에서는 'update'가 일반적, 'create-drop'은 테스트에서 사용
-    show-sql: true  # SQL 쿼리 출력
-  sql:
-    init:
-      mode: never  # SQL 초기화 비활성화
+      ddl-auto: update
   jwt:
-    issuer: ${JWT_ISSUER}
-    secret: ${JWT_SECRET}
+    issuer: JWT_ISSUER
+    secret: JWT_SECRET
     accessTokenExpirationTime: 3600000
     refreshTokenExpirationTime: 1209600000
+  data:
+    redis:
+      host: localhost
+      port: 6378
+      password: test
+      database: 0
+
+cloudinary:
+  cloud_name: CLOUDINARY_CLOUD_NAME
+  api_key: CLOUDINARY_KEY
+  api_secret: CLOUDINARY_API_SECRET
