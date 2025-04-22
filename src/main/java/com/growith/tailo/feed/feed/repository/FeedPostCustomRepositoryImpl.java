@@ -57,6 +57,7 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                         Projections.constructor(FeedPostResponse.class,
                                 feedPost.id,
                                 feedPost.content,
+                                feedPost.author.accountId,
                                 feedPost.author.nickname,
                                 feedPost.author.profileImageUrl,
                                 GroupBy.list(feedImage.imageUrl), // 이미지들 묶기
@@ -108,6 +109,7 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                         Projections.constructor(FeedPostResponse.class,
                                 feedPost.id,
                                 feedPost.content,
+                                feedPost.author.accountId,
                                 feedPost.author.nickname,
                                 feedPost.author.profileImageUrl,
                                 GroupBy.list(feedImage.imageUrl),
