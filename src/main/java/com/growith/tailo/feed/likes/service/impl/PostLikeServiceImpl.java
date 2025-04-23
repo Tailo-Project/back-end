@@ -5,7 +5,7 @@ import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.feed.feed.repository.FeedPostRepository;
 import com.growith.tailo.feed.likes.entity.PostLike;
 import com.growith.tailo.feed.likes.repository.PostLikeRepository;
-import com.growith.tailo.feed.likes.service.PostListService;
+import com.growith.tailo.feed.likes.service.PostLikeService;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class PostListServiceImpl implements PostListService {
+public class PostLikeServiceImpl implements PostLikeService {
 
     private final RedissonClient redissonClient;
     private final MemberRepository memberRepository;
