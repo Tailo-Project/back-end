@@ -3,9 +3,10 @@ package com.growith.tailo.feed.likes.service.impl;
 import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.feed.feed.repository.FeedPostRepository;
+import com.growith.tailo.feed.likes.dto.response.LikedFeedIdsResponse;
 import com.growith.tailo.feed.likes.entity.PostLike;
 import com.growith.tailo.feed.likes.repository.PostLikeRepository;
-import com.growith.tailo.feed.likes.service.PostListService;
+import com.growith.tailo.feed.likes.service.PostLikeService;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,13 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class PostListServiceImpl implements PostListService {
+public class PostLikeServiceImpl implements PostLikeService {
 
     private final RedissonClient redissonClient;
     private final MemberRepository memberRepository;
@@ -76,6 +78,23 @@ public class PostListServiceImpl implements PostListService {
 
     @Override
     public String countLikes(Long feedId, Member member) {
+
+        if (member == null || !memberRepository.existsById(member.getId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
         return postLikeRepository.countByFeedPostId(feedId);
+    }
+
+    @Override
+    public LikedFeedIdsResponse getLikedFeedIds(Member member) {
+
+        if (member == null || !memberRepository.existsById(member.getId())) {
+            throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        List<Long> likedFeedIds = postLikeRepository.findFeedIdsByMemberId(member.getId());
+
+        return new LikedFeedIdsResponse(likedFeedIds);
     }
 }

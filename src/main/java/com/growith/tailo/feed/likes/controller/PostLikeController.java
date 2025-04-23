@@ -2,7 +2,7 @@ package com.growith.tailo.feed.likes.controller;
 
 import com.growith.tailo.common.dto.response.ApiResponse;
 import com.growith.tailo.common.util.ApiResponses;
-import com.growith.tailo.feed.likes.service.PostListService;
+import com.growith.tailo.feed.likes.service.PostLikeService;
 import com.growith.tailo.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PostLikeController {
 
-    private final PostListService postListService;
+    private final PostLikeService postLikeService;
 
     @Operation(
             summary = "좋아요",
@@ -34,9 +34,9 @@ public class PostLikeController {
             @PathVariable("feedId") Long feedId,
             @AuthenticationPrincipal Member member) {
 
-        String result = postListService.likeFeedPost(feedId, member);
+        String result = postLikeService.likeFeedPost(feedId, member);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.created(result));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 
     @Operation(
@@ -50,8 +50,8 @@ public class PostLikeController {
             @PathVariable("feedId") Long feedId,
             @AuthenticationPrincipal Member member) {
 
-        String result = postListService.countLikes(feedId, member);
+        String result = postLikeService.countLikes(feedId, member);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.created(result));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 }
