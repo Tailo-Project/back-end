@@ -12,6 +12,7 @@ import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,7 +46,7 @@ public class MemberController {
     @Operation(summary = "회원가입", description = "JSON과 프로필 이미지를 함께 전송합니다.")
     @PostMapping(value = "/auth/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<AuthResponse>>  signUp(
-             @RequestPart("request") SignUpRequest request,
+             @RequestPart("request") @Valid SignUpRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
         AuthResponse authResponse = memberService.signUpService(request,profileImage);

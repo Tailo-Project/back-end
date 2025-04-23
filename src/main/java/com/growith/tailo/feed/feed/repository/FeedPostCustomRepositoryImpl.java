@@ -49,6 +49,7 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                 .leftJoin(follow).on(follow.follower.id.eq(member.getId()).or(follow.following.id.eq(member.getId())))
                 .where(
                         feedPost.author.id.eq(member.getId()).or(follow.follower.eq(member))
+                                .and(follow.following.id.eq(feedPost.author.id))
                 )
                 .orderBy(feedPost.createdAt.desc(), feedPost.id.desc())
                 .offset(pageable.getOffset())

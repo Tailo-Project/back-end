@@ -71,6 +71,10 @@ public class MemberService {
     @Transactional
     public AuthResponse signUpService(SignUpRequest signUpRequest, MultipartFile profileImage) {
         validateAccountId(signUpRequest.accountId());
+        if(memberRepository.existsByEmail(signUpRequest.email())){
+            throw new ResourceAlreadyExistException("이미 가입한 이메일입니다.");
+        }
+
         String imageUrl = null;
 
         // 이미지 저장
