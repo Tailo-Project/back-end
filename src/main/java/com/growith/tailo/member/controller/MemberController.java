@@ -59,16 +59,17 @@ public class MemberController {
         memberService.validateAccountId(accountId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("사용 가능한 아이디입니다."));
     }
+
     @Operation(summary = "회원 프로필", description = "프로필 컴포넌트에 사용 될 api ")
     @GetMapping("/member/profile/{accountId}")
-    public ResponseEntity<ApiResponse<MemberProfileResponse>> memberProfile(@AuthenticationPrincipal Member member, @PathVariable("accountId") String accountId){
-        MemberProfileResponse memberProfileResponse =memberService.profileService(member,accountId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("요청"+member.getAccountId()+": 프로필", memberProfileResponse));
+    public ResponseEntity<ApiResponse<MemberProfileResponse>> memberProfile(@AuthenticationPrincipal Member member, @PathVariable("accountId") String accountId) {
+        MemberProfileResponse memberProfileResponse = memberService.profileService(member, accountId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("요청" + member.getAccountId() + ": 프로필", memberProfileResponse));
     }
 
     @Operation(summary = "회원 상세", description = "프로필 수정 페이지 접속 시 표시 될 데이터 용")
     @GetMapping("/member")
-    public ResponseEntity<ApiResponse<MemberDetailResponse>> detail(@AuthenticationPrincipal Member member){
+    public ResponseEntity<ApiResponse<MemberDetailResponse>> detail(@AuthenticationPrincipal Member member) {
         MemberDetailResponse response = memberService.getDetail(member);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
     }
@@ -76,7 +77,7 @@ public class MemberController {
     @Operation(summary = "프로필 수정", description = "회원의 프로필을 수정")
     @PatchMapping(value = "/member", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<MemberDetailResponse>> update(@AuthenticationPrincipal Member member,
-                                                                    @RequestPart("request") UpdateRequest updateRequest,
+                                                                    @RequestPart("request") @Valid UpdateRequest updateRequest,
                                                                     @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         MemberDetailResponse response = memberService.updateProfile(member, updateRequest, profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
