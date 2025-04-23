@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class NotificationRepositoryImpl implements EmitterRepository {
+public class EmitterRepositoryImpl implements EmitterRepository {
 
     // 사용자별로 생성된 SseEmitter 객체를 관리
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
