@@ -36,7 +36,7 @@ public class PostLikeController {
 
         String result = postListService.likeFeedPost(feedId, member);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.created(result));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 
     @Operation(
@@ -52,6 +52,6 @@ public class PostLikeController {
 
         String result = postListService.countLikes(feedId, member);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.created(result));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 }
