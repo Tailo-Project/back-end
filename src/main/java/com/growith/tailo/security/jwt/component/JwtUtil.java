@@ -109,7 +109,7 @@ public class JwtUtil implements Serializable {
                 .setSubject(subject)
                 .setIssuer(issuer)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
         log.info("Access Token 생성 완료: {}", token);
