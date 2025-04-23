@@ -42,6 +42,10 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.35.0'
+
     //Querydsl
     implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
@@ -54,11 +58,11 @@ dependencies {
 
     // Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
+    // jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
+    // OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.32.1'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.1.2' // jwt 파싱 하기 위함
@@ -77,6 +81,13 @@ dependencies {
 
     //WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    //RabbitMQ
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // json serializable, deserializable
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 
 }
 
