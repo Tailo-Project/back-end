@@ -80,7 +80,7 @@ public class JwtUtil implements Serializable {
             throw e;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 파싱 오류 발생", e);
-            throw new RuntimeException("잘못된 JWT 토큰입니다.");
+            throw new RuntimeException("잘못된 정보입니다.");
         }
     }
 
@@ -109,7 +109,7 @@ public class JwtUtil implements Serializable {
                 .setSubject(subject)
                 .setIssuer(issuer)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + 1))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
         log.info("Access Token 생성 완료: {}", token);

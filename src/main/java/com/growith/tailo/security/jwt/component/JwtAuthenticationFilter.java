@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write("{\"message\": \"액세스 토큰이 만료되었습니다.\"}");
+                response.getWriter().write("재 요청 필요");
                 response.getWriter().flush();
                 return;
             }
@@ -73,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write("{\"message\": \"토큰 인증 정보가 유효하지 않습니다.\"}");
+                response.getWriter().write("잘못된 정보입니다.");
                 response.getWriter().flush();
                 return;
             }
