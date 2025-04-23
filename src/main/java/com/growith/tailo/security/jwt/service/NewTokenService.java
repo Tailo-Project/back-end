@@ -23,8 +23,6 @@ public class NewTokenService {
     private final MemberRepository memberRepository;
 
     public String createNewAccess(String accountId, HttpServletRequest request){
-        log.error("Request IP: {}", request.getRemoteAddr());
-        log.error("Request URI: {}", request.getRequestURI());
         Member member = memberRepository.findByAccountId(accountId).orElseThrow(
                 ()-> new ResourceNotFoundException("현재 로그인한 유저 정보가 없습니다.")
         );
