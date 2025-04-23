@@ -8,7 +8,7 @@ import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
 import com.growith.tailo.member.dto.response.KakaoUserInfo;
-import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.dto.response.AuthResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
@@ -38,7 +38,7 @@ public class MemberService {
     private final ImageUploadHandler imageUploadHandler;
     private final FollowRepository followRepository;
     @Transactional
-    public LoginResponse socialLoginService(SocialLoginRequest request) {
+    public AuthResponse socialLoginService(SocialLoginRequest request) {
         String email;
         if ("google".equals(request.provider())) {
             email = oAuth2Service.validateIdToken(request.accessToken());
@@ -65,12 +65,16 @@ public class MemberService {
                 .token(refreshToken)
                 .build());
 
-        return new LoginResponse(email,accountId,accessToken);
+        return new AuthResponse(email,accountId,accessToken);
     }
 
     @Transactional
-    public LoginResponse signUpService(SignUpRequest signUpRequest, MultipartFile profileImage) {
+    public AuthResponse signUpService(SignUpRequest signUpRequest, MultipartFile profileImage) {
         validateAccountId(signUpRequest.accountId());
+        if(memberRepository.existsByEmail(signUpRequest.email())){
+            throw new ResourceAlreadyExistException("이미 가입한 이메일입니다.");
+        }
+
         String imageUrl = null;
 
         // 이미지 저장
@@ -92,7 +96,7 @@ public class MemberService {
                 .token(refreshToken)
                 .build());
 
-        return new LoginResponse(email, signUpAccountId, accessToken);
+        return new AuthResponse(email, signUpAccountId, accessToken);
 
     }
 
@@ -120,9 +124,6 @@ public class MemberService {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
         }
 
-        if (!member.getAccountId().equals(updateRequest.accountId())) {
-            validateAccountId(updateRequest.accountId());
-        }
         // 기존 이미지 삭제 처리
         if (profileImage != null && !profileImage.isEmpty()) {
             String oldImageUrl = member.getProfileImageUrl();
@@ -159,4 +160,3 @@ public class MemberService {
     }
 
 }
-

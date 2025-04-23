@@ -5,7 +5,7 @@ import com.growith.tailo.common.util.ApiResponses;
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
-import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.dto.response.AuthResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
@@ -38,19 +38,19 @@ public class MemberController {
 
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 통해 토큰 발급")
     @PostMapping("/auth/sign-in")
-    public ResponseEntity<ApiResponse<LoginResponse>> socialLogin(@RequestBody SocialLoginRequest request) {
-        LoginResponse loginResponse = memberService.socialLoginService(request);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(loginResponse));
+    public ResponseEntity<ApiResponse<AuthResponse>> socialLogin(@RequestBody SocialLoginRequest request) {
+        AuthResponse authResponse = memberService.socialLoginService(request);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(authResponse));
     }
 
     @Operation(summary = "회원가입", description = "JSON과 프로필 이미지를 함께 전송합니다.")
     @PostMapping(value = "/auth/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<LoginResponse>> signUp(
+    public ResponseEntity<ApiResponse<AuthResponse>>  signUp(
             @RequestPart("request") @Valid SignUpRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
-        LoginResponse loginResponse = memberService.signUpService(request, profileImage);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(loginResponse));
+        AuthResponse authResponse = memberService.signUpService(request,profileImage);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(authResponse));
     }
 
     @Operation(summary = "아이디 중복 확인", description = "사용할 수 있는 아이디인지 확인")
