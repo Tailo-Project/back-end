@@ -83,7 +83,7 @@ public class JwtUtil implements Serializable {
                     .getBody();
         } catch (ExpiredJwtException e) {
             log.warn("만료된 JWT 토큰입니다: {}", e.getMessage());
-            return e.getClaims();
+            throw e;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 파싱 오류 발생", e);
             throw new RuntimeException("잘못된 JWT 토큰입니다.");
@@ -127,10 +127,10 @@ public class JwtUtil implements Serializable {
 
 
     // 토큰 검증 (username 일치 & 만료되지 않음)
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateAccessToken(String token, UserDetails userDetails) {
         final String userName = getUsernameFromToken(token);
         boolean valid = userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
-        log.info("토큰 유효성 검사 결과: {}", valid);
+
         return valid;
     }
 
