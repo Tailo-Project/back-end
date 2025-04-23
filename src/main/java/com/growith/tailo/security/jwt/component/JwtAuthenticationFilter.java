@@ -1,6 +1,5 @@
 package com.growith.tailo.security.jwt.component;
 
-import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import com.growith.tailo.security.jwt.service.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -54,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write("재 요청 필요");
+                response.getWriter().write("{\"message\": \"재 요청이 필요합니다.\"}");
                 response.getWriter().flush();
                 return;
             }
@@ -73,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write("잘못된 정보입니다.");
+                response.getWriter().write("{\"message\": \"회원 정보가 올바르지 않습니다.\"}");
                 response.getWriter().flush();
                 return;
             }
