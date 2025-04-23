@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = null;
         String memberAccountId = null;
         String tokenPrefix = "Bearer ";
-        // 레퀘스트 헤더에서 토큰만 파싱
+        // 리퀘스트 헤더에서 토큰만 파싱
         if (header != null && header.startsWith(tokenPrefix)) {
             accessToken = header.substring(tokenPrefix.length());
 
