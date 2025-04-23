@@ -2,6 +2,8 @@ package com.growith.tailo.member.controller;
 
 import com.growith.tailo.common.dto.response.ApiResponse;
 import com.growith.tailo.common.util.ApiResponses;
+import com.growith.tailo.feed.likes.dto.response.LikedFeedIdsResponse;
+import com.growith.tailo.feed.likes.service.PostLikeService;
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PostLikeService postLikeService;
 
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 통해 토큰 발급")
     @PostMapping("/auth/sign-in")
@@ -81,5 +84,16 @@ public class MemberController {
                                                                     @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         MemberDetailResponse response = memberService.updateProfile(member, updateRequest, profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
+    }
+
+    @Operation(
+            summary = "좋아요한 피드 id 목록 조회",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "좋아요한 피드 id 목록 조회 성공"),
+            })
+    @GetMapping("/liked-feeds")
+    public ResponseEntity<ApiResponse<LikedFeedIdsResponse>> getLikedFeedIds(@AuthenticationPrincipal Member member) {
+        LikedFeedIdsResponse result = postLikeService.getLikedFeedIds(member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("좋아요한 피드 id 목록 조회 성공", result));
     }
 }
