@@ -1,14 +1,13 @@
 package com.growith.tailo.member.mapper.from;
 
-import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.dto.response.AuthResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
 
-
 public class FromMemberMapper {
-    public static LoginResponse fromMemberLogin(String email, String accountId,String accessToken){
-        return LoginResponse
+    public static AuthResponse fromMemberLogin(String email, String accountId, String accessToken){
+        return AuthResponse
                 .builder()
                 .email(email)
                 .accountId(accountId)
@@ -32,11 +31,13 @@ public class FromMemberMapper {
     }
 
     public static MemberProfileResponse fromMemberProfile(Member member,
+                                                          Long countFeed,
                                                           Long countFollower,
                                                           Long countFollowing){
         return MemberProfileResponse.builder()
                 .nickname(member.getNickname())
                 .accountId(member.getAccountId())
+                .countFeed(countFeed)
                 .countFollower(countFollower)
                 .countFollowing(countFollowing)
                 .profileImageUrl(member.getProfileImageUrl())

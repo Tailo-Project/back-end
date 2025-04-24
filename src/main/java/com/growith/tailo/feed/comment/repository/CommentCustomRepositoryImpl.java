@@ -33,6 +33,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
         List<CommentResponse> comments = jpaQueryFactory.select(
                         Projections.constructor(CommentResponse.class,
                                 comment.id,
+                                comment.author.accountId,
                                 comment.content,
                                 comment.author.nickname,
                                 comment.author.profileImageUrl,
@@ -40,7 +41,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
                         ))
                 .from(comment)
                 .where(comment.feedPost.eq(feedPost)
-                        .and(comment.parentComment.isNull())) // 대댓글 제뢰
+                        .and(comment.parentComment.isNull())) // 대댓글 제외
                 .orderBy(comment.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -72,6 +73,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
                 .select(Projections.constructor(ReplyResponse.class,
                         reply.id,
                         reply.content,
+                        reply.author.accountId,
                         reply.author.nickname,
                         reply.author.profileImageUrl,
                         reply.createdAt
@@ -103,6 +105,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
                 .select(Projections.constructor(ReplyResponse.class,
                         reply.id,
                         reply.content,
+                        reply.author.accountId,
                         reply.author.nickname,
                         reply.author.profileImageUrl,
                         reply.createdAt

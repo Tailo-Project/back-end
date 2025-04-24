@@ -19,3 +19,6 @@ spring:
     secret: ${JWT_SECRET}
     accessTokenExpirationTime: 3600000
     refreshTokenExpirationTime: 1209600000
+
+app:
+  base-url: ${BASE_URL} # 알림 클릭 시 호출하는 url

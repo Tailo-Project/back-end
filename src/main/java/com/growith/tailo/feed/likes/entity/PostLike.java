@@ -2,6 +2,7 @@ package com.growith.tailo.feed.likes.entity;
 
 import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.member.entity.Member;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 })
 public class PostLike {
     @Id
+    @Column(name = "post_like_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
