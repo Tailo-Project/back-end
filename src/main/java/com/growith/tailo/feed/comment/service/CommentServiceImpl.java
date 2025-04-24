@@ -10,8 +10,11 @@ import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.feed.feed.repository.FeedPostRepository;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
+import com.growith.tailo.notification.enums.NotificationType;
+import com.growith.tailo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,10 @@ public class CommentServiceImpl implements CommentService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final FeedPostRepository feedPostRepository;
+    private final NotificationService notificationService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     // 댓글 등록
     @Override
@@ -53,11 +60,20 @@ public class CommentServiceImpl implements CommentService {
             }
         }
 
+        // 같은 댓글 반복 방지
         boolean isDuplicate = commentRepository.existsByAuthorAndFeedPostAndContentAndCreatedAtAfter(
                 member, feedPost, commentRequest.content(), LocalDateTime.now().minusMinutes(1));
 
+        if (isDuplicate) {
+            throw new IllegalStateException("1분 이내에 동일한 댓글을 작성할 수 없습니다.");
+        }
+
         Comment comment = commentRequest.toEntity(feedPost, member, parentComment, commentRequest.content());
         commentRepository.save(comment);
+
+        // TODO : MQ 도입 시 비동기로 변경 예정
+        String notificationUrl = String.format("%s/api/feed/%s", baseUrl, feedId);
+        notificationService.send(feedPost.getAuthor(), member, NotificationType.COMMENT, notificationUrl);
 
         return "댓글 등록 성공";
     }
