@@ -2,10 +2,12 @@ package com.growith.tailo.member.controller;
 
 import com.growith.tailo.common.dto.response.ApiResponse;
 import com.growith.tailo.common.util.ApiResponses;
+import com.growith.tailo.feed.likes.dto.response.LikedFeedIdsResponse;
+import com.growith.tailo.feed.likes.service.PostLikeService;
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
-import com.growith.tailo.member.dto.response.LoginResponse;
+import com.growith.tailo.member.dto.response.AuthResponse;
 import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
@@ -35,22 +37,23 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PostLikeService postLikeService;
 
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 통해 토큰 발급")
     @PostMapping("/auth/sign-in")
-    public ResponseEntity<ApiResponse<LoginResponse>> socialLogin(@RequestBody SocialLoginRequest request) {
-        LoginResponse loginResponse = memberService.socialLoginService(request);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(loginResponse));
+    public ResponseEntity<ApiResponse<AuthResponse>> socialLogin(@RequestBody SocialLoginRequest request) {
+        AuthResponse authResponse = memberService.socialLoginService(request);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(authResponse));
     }
 
     @Operation(summary = "회원가입", description = "JSON과 프로필 이미지를 함께 전송합니다.")
     @PostMapping(value = "/auth/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<LoginResponse>> signUp(
+    public ResponseEntity<ApiResponse<AuthResponse>>  signUp(
             @RequestPart("request") @Valid SignUpRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
-        LoginResponse loginResponse = memberService.signUpService(request, profileImage);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(loginResponse));
+        AuthResponse authResponse = memberService.signUpService(request,profileImage);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(authResponse));
     }
 
     @Operation(summary = "아이디 중복 확인", description = "사용할 수 있는 아이디인지 확인")
@@ -81,5 +84,16 @@ public class MemberController {
                                                                     @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         MemberDetailResponse response = memberService.updateProfile(member, updateRequest, profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
+    }
+
+    @Operation(
+            summary = "좋아요한 피드 id 목록 조회",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "좋아요한 피드 id 목록 조회 성공"),
+            })
+    @GetMapping("/liked-feeds")
+    public ResponseEntity<ApiResponse<LikedFeedIdsResponse>> getLikedFeedIds(@AuthenticationPrincipal Member member) {
+        LikedFeedIdsResponse result = postLikeService.getLikedFeedIds(member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("좋아요한 피드 id 목록 조회 성공", result));
     }
 }

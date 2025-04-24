@@ -1,5 +1,6 @@
 package com.growith.tailo.member.repository;
 
+import com.growith.tailo.feed.feed.entity.QFeedPost;
 import com.growith.tailo.follow.entity.QFollow;
 import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
@@ -18,10 +19,16 @@ public class MemberRepositoryImpl implements MemberDSLRepository{
 
         QMember member = QMember.member;
         QFollow follow = QFollow.follow;
-
+        QFeedPost feedPost = QFeedPost.feedPost;
         Member result = queryFactory
                 .selectFrom(member)
                 .where(member.accountId.eq(accountId))
+                .fetchOne();
+        //피드수
+        Long feedCount = queryFactory
+                .select(feedPost.count())
+                .from(feedPost)
+                .where(feedPost.author.eq(result))
                 .fetchOne();
         // 팔로워 수
         Long followerCount = queryFactory
@@ -36,7 +43,7 @@ public class MemberRepositoryImpl implements MemberDSLRepository{
                 .where(follow.following.eq(result))
                 .fetchOne();
 
-        return FromMemberMapper.fromMemberProfile(result,followerCount,followingCount);
+        return FromMemberMapper.fromMemberProfile(result,feedCount,followerCount,followingCount);
 
     }
 }

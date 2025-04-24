@@ -26,6 +26,7 @@ public class Notification extends BaseTime {
 
     @Id
     @Column(name = "notification_id")
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -139,7 +139,6 @@ public class Member extends BaseTime implements UserDetails {
     }
 
     public void updateProfile(UpdateRequest updateRequest) {
-        this.accountId = updateRequest.accountId();
         this.nickname = updateRequest.nickname();
         this.breed = updateRequest.breed();
         this.type = updateRequest.type();
@@ -147,6 +146,4 @@ public class Member extends BaseTime implements UserDetails {
         this.age = updateRequest.age();
         this.gender = updateRequest.gender();
     }
-
-    // getters and setters
 }
