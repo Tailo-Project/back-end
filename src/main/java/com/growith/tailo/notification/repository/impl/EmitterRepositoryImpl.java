@@ -1,12 +1,14 @@
 package com.growith.tailo.notification.repository.impl;
 
 import com.growith.tailo.notification.repository.EmitterRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@Repository
 public class EmitterRepositoryImpl implements EmitterRepository {
 
     // 사용자별로 생성된 SseEmitter 객체를 관리
