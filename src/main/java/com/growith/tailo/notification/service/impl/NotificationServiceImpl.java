@@ -1,5 +1,6 @@
 package com.growith.tailo.notification.service.impl;
 
+import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.notification.dto.NotificationDto;
 import com.growith.tailo.notification.dto.NotificationListResponse;
@@ -115,6 +116,20 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         return NotificationListResponse.builder().notificationList(result).build();
+    }
+
+    // 알림 읽음 처리
+    @Override
+    public String MarkNotification(Long NotificationId) {
+        boolean isUpdated = notificationRepository.markNotification(NotificationId) > 0;
+
+        if (!isUpdated) {
+            throw new ResourceNotFoundException("해당 알림이 존재하지 않거나 이미 처리되었습니다.");
+        }
+
+        String result = String.format("%d 알림 읽음 처리 성공", NotificationId);
+
+        return result;
     }
 
 

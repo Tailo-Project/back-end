@@ -12,4 +12,6 @@ public interface NotificationService {
     void send(Member receiver, Member sender, NotificationType type, String url);
 
     NotificationListResponse getNotifications(Member member);
+
+    String MarkNotification(Long NotificationId);
 }

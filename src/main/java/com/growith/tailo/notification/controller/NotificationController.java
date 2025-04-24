@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,6 +65,23 @@ public class NotificationController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("알림 목록 조회 성공", result));
 
+    }
+
+    // 알림 읽기 처리
+    @Operation(
+            summary = "알림 읽기 처리",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "알림 목록 조회 성공"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "이미 읽음 처리 했거나 없는 알림"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러")
+            })
+    @PatchMapping("/{NotificationId}/read")
+    public ResponseEntity<ApiResponse<String>> readNotification(
+            @PathVariable("NotificationId") Long NotificationId,
+            @AuthenticationPrincipal Member member) {
+        String result = notificationService.MarkNotification(NotificationId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 
     // 알림 test url
