@@ -2,16 +2,20 @@ package com.growith.tailo.notification.service.impl;
 
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.notification.dto.NotificationDto;
+import com.growith.tailo.notification.dto.NotificationListResponse;
 import com.growith.tailo.notification.entity.Notification;
 import com.growith.tailo.notification.enums.NotificationType;
 import com.growith.tailo.notification.repository.EmitterRepository;
 import com.growith.tailo.notification.repository.NotificationRepository;
 import com.growith.tailo.notification.service.NotificationService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,7 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     // subscribe
     @Override
-    public SseEmitter subscribe(String accountId, String lastEventId) {
+    public SseEmitter subscribe(String accountId, String lastEventId, HttpServletResponse response) {
         String emitterId = makeTimeIncludeId(accountId);
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
 
@@ -40,6 +44,9 @@ public class NotificationServiceImpl implements NotificationService {
         if (!lastEventId.isEmpty()) {
             sendLostData(lastEventId, accountId, emitterId, emitter);
         }
+
+        // 실시간 응답이 필요하기 때문에 Nginx 버퍼링 옵션 off
+        response.setHeader("X-Accel-Buffering", "no");
 
         return emitter;
     }
@@ -92,6 +99,22 @@ public class NotificationServiceImpl implements NotificationService {
                     sendNotification(emitter, eventId, key, NotificationDto.of(notification));
                 }
         );
+    }
+
+    // 알림 목록 조회
+    @Override
+    public NotificationListResponse getNotifications(Member member) {
+
+        // TODO : 읽음 처리되지 않은 것만 할 지, 읽음 처리된 것도 볼 수 있도록 할 지 정하기!
+        List<Notification> notificationList = notificationRepository.findAllByReceiver(member);
+
+        List<NotificationDto> result = new ArrayList<>();
+
+        for (Notification notification : notificationList) {
+            result.add(NotificationDto.of(notification));
+        }
+
+        return NotificationListResponse.builder().notificationList(result).build();
     }
 
 
