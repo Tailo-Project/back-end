@@ -93,7 +93,7 @@ public class NotificationController {
     public ResponseEntity<ApiResponse<String>> readNotification(
             @PathVariable("NotificationId") Long NotificationId,
             @AuthenticationPrincipal Member member) {
-        String result = notificationService.MarkNotification(NotificationId);
+        String result = notificationService.markNotification(NotificationId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
 

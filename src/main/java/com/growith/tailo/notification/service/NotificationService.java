@@ -15,5 +15,5 @@ public interface NotificationService {
 
     Page<NotificationDto> getNotifications(Member member, Pageable pageable);
 
-    String MarkNotification(Long NotificationId);
+    String markNotification(Long NotificationId);
 }

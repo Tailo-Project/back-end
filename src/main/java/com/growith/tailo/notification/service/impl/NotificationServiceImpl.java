@@ -113,7 +113,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     // 알림 읽음 처리
     @Override
-    public String MarkNotification(Long NotificationId) {
+    public String markNotification(Long NotificationId) {
         boolean isUpdated = notificationRepository.markNotification(NotificationId) > 0;
 
         if (!isUpdated) {
