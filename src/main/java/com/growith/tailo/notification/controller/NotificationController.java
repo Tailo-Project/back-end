@@ -1,14 +1,18 @@
 package com.growith.tailo.notification.controller;
 
+import com.growith.tailo.common.dto.Pagination;
 import com.growith.tailo.common.dto.response.ApiResponse;
 import com.growith.tailo.common.util.ApiResponses;
 import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.notification.dto.NotificationDto;
 import com.growith.tailo.notification.dto.NotificationListResponse;
 import com.growith.tailo.notification.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -59,9 +63,18 @@ public class NotificationController {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러")
             })
     @GetMapping
-    public ResponseEntity<ApiResponse<NotificationListResponse>> getNotifications(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<ApiResponse<NotificationListResponse>> getNotifications(
+            @AuthenticationPrincipal Member member,
+            Pageable pageable) {
 
-        NotificationListResponse result = notificationService.getNotifications(member);
+        Page<NotificationDto> notificationList = notificationService.getNotifications(member, pageable);
+
+        NotificationListResponse result = new NotificationListResponse(notificationList.getContent(), new Pagination(
+                notificationList.getNumber(),
+                notificationList.getSize(),
+                notificationList.getTotalPages(),
+                notificationList.getTotalElements()
+        ));
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("알림 목록 조회 성공", result));
 
