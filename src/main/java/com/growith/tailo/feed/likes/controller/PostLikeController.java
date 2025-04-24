@@ -3,6 +3,7 @@ package com.growith.tailo.feed.likes.controller;
 import com.growith.tailo.common.dto.response.ApiResponse;
 import com.growith.tailo.common.util.ApiResponses;
 import com.growith.tailo.feed.likes.service.PostLikeService;
+
 import com.growith.tailo.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class PostLikeController {
         String result = postLikeService.likeFeedPost(feedId, member);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
+
     }
 
     @Operation(
@@ -53,5 +55,6 @@ public class PostLikeController {
         String result = postLikeService.countLikes(feedId, member);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
+
     }
 }
