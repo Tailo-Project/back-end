@@ -46,10 +46,11 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                 .leftJoin(feedImage).on(feedImage.feedPost.eq(feedPost))
                 .leftJoin(feedPostHashtag).on(feedPostHashtag.feedPost.eq(feedPost))
                 .leftJoin(hashtags).on(hashtags.id.eq(feedPostHashtag.hashtags.id))
-                .leftJoin(follow).on(follow.follower.id.eq(member.getId()).or(follow.following.id.eq(member.getId())))
+                .leftJoin(follow).on(follow.follower.id.eq(member.getId()))
                 .where(
-                        feedPost.author.id.eq(member.getId()).or(follow.follower.eq(member))
-                                .and(follow.following.id.eq(feedPost.author.id))
+                        feedPost.author.id.eq(member.getId())
+                                .or(follow.follower.id.eq(member.getId())
+                                        .and(follow.following.id.eq(feedPost.author.id)))
                 )
                 .orderBy(feedPost.createdAt.desc(), feedPost.id.desc())
                 .offset(pageable.getOffset())
@@ -79,9 +80,11 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
         Long total = jpaQueryFactory
                 .select(feedPost.count())
                 .from(feedPost)
-                .leftJoin(follow).on(follow.follower.id.eq(member.getId()).or(follow.following.id.eq(member.getId())))
+                .leftJoin(follow).on(follow.follower.id.eq(member.getId()))
                 .where(
-                        feedPost.author.id.eq(member.getId()).or(follow.follower.eq(member))
+                        feedPost.author.id.eq(member.getId())
+                                .or(follow.follower.id.eq(member.getId())
+                                        .and(follow.following.id.eq(feedPost.author.id)))
                 )
                 .fetchOne();
 
@@ -96,7 +99,6 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
         QHashtags hashtags = QHashtags.hashtags;
         QFeedPostImage feedImage = QFeedPostImage.feedPostImage;
         QFeedPostHashtag feedPostHashtag = QFeedPostHashtag.feedPostHashtag;
-        QFollow follow = QFollow.follow;
 
         FeedPostResponse result = jpaQueryFactory
                 .from(feedPost)
