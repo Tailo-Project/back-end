@@ -14,12 +14,22 @@ spring:
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
       database: ${REDIS_NUMBER}
+
   rabbitmq:
     host: ${RABBIT_HOST}
     port: ${RABBIT_PORT}
     username: ${RABBIT_USERNAME}
     password: ${RABBIT_PASSWORD}
     virtual-host: ${RABBIT_VIRTUAL}
+
+    exchange: test.exchange
+    keroro:
+      binding-key: keroro
+    geroro:
+      binding-key: geroro
+    garuru:
+      binding-key: garuru
+
 ## Swagger
 springdoc:
   swagger-ui:
