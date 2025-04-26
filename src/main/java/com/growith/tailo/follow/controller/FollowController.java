@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/member/follow")
 @Tag(name = "Follow", description = "팔로우 관리 API")
 public class FollowController {
+
     private final FollowService followService;
+
     @Operation(summary = "팔로우 요청", description = "상대방을 팔로우 하는 요청입니다.")
     @PostMapping("/{accountId}")
     public ResponseEntity<ApiResponse<String>> memberFollow(@AuthenticationPrincipal Member member,@PathVariable("accountId") String accountId){
