@@ -34,13 +34,13 @@ public class MemberRepositoryImpl implements MemberDSLRepository{
         Long followerCount = queryFactory
                 .select(follow.count())
                 .from(follow)
-                .where(follow.follower.eq(result))
+                .where(follow.following.eq(result))
                 .fetchOne();
         // 팔로잉 수
         Long followingCount = queryFactory
                 .select(follow.count())
                 .from(follow)
-                .where(follow.following.eq(result))
+                .where(follow.follower.eq(result))
                 .fetchOne();
 
         return FromMemberMapper.fromMemberProfile(result,feedCount,followerCount,followingCount);
