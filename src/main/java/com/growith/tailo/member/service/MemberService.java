@@ -113,7 +113,7 @@ public class MemberService {
         if(!member.getAccountId().equals(accountId)){
             Member target = memberRepository.findByAccountId(accountId).orElseThrow(
                     ()->new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
-            if(blockRepository.existsByBlockerAndBlocked(member,target)){
+            if(blockRepository.existsByBlockerAndBlocked(member,target)){ //차단 되어있는 프로필이면 차단 여부 반영 후 바로 리턴
                 MemberProfileResponse profileResponse = memberRepository.findByMemberProfile(accountId);
                 return profileResponse.toBuilder().isBlock(true).build();
             }
