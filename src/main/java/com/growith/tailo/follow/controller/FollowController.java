@@ -28,14 +28,14 @@ public class FollowController {
     @PostMapping("/{accountId}")
     public ResponseEntity<ApiResponse<Void>> memberFollow(@AuthenticationPrincipal Member member,@PathVariable("accountId") String accountId){
         followService.follow(member,accountId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("팔로우 성공"));
     }
 
     @Operation(summary = "팔로우 취소", description = "팔로우를 취소(삭제)하는 요청")
     @DeleteMapping("/{accountId}")
     public ResponseEntity<ApiResponse<Void>> followCancel(@AuthenticationPrincipal Member member, @PathVariable("accountId")String accountId){
         followService.followCancel(member,accountId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("팔로우 취소 성공"));
     }
 
     @Operation(summary = "팔로우 조회", description = "멤버가 팔로우한 리스트 조회")
