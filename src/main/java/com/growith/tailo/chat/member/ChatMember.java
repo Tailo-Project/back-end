@@ -1,6 +1,5 @@
 package com.growith.tailo.chat.member;
 
-
 import com.growith.tailo.chat.room.ChatRoom;
 import com.growith.tailo.member.entity.Member;
 import jakarta.persistence.*;
@@ -16,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ChatMember {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_member_id")

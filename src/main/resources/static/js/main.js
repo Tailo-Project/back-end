@@ -34,7 +34,7 @@ function connect(event) {
 
 function onConnected() {
     // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public', onMessageReceived);
+    stompClient.subscribe('/topic/chat/room/1', onMessageReceived);
 
     // Tell your username to the server
     stompClient.send("/app/chat.addUser",
@@ -51,21 +51,20 @@ function onError(error) {
     connectingElement.style.color = 'red';
 }
 
-
 function sendMessage(event) {
     var messageContent = messageInput.value.trim();
     if(messageContent && stompClient) {
         var chatMessage = {
             sender: username,
             content: messageInput.value,
-            type: 'CHAT'
+            roomId: 1, // 방 ID가 필요하면 넣고, 아니면 삭제
+            messageType: 'CHAT' // type → messageType 으로 변경
         };
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
 }
-
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);

@@ -2,6 +2,7 @@ package com.growith.tailo.chat.message;
 
 import com.growith.tailo.chat.room.ChatRoom;
 import com.growith.tailo.chat.member.ChatMember;
+import com.growith.tailo.common.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatMessage {
+public class ChatMessage extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_message_id")

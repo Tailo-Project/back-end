@@ -1,5 +1,7 @@
 package com.growith.tailo.chat.message;
 
-public record ChatDTO(MessageType type, String content, Long accountId, Long roomId) {
+import java.time.LocalDateTime;
+
+public record ChatDTO(Long roomId, String sender, String messageType, String content) {
 
 }
