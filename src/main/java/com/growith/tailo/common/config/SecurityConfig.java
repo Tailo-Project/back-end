@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .configurationSource(WebConfig.corsConfigurationSource())
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**").permitAll())
+                        .requestMatchers("/**","/ws/**").permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(excp -> excp.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

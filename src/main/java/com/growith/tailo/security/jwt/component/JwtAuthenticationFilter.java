@@ -33,13 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailService userDetailService;
     private final JwtUtil jwtUtil;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if(request.getRequestURI().startsWith("/api/auth")){
-            filterChain.doFilter(request,response);
+        if (request.getRequestURI().startsWith("/api/auth")|| request.getRequestURI().startsWith("/ws/chat")) {
+            filterChain.doFilter(request, response);
             return;
         }
 

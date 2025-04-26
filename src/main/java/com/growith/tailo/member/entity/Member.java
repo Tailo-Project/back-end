@@ -1,6 +1,5 @@
 package com.growith.tailo.member.entity;
 
-import com.growith.tailo.chat.message.entity.ChatMessage;
 import com.growith.tailo.common.entity.BaseTime;
 import com.growith.tailo.feed.comment.entity.Comment;
 import com.growith.tailo.follow.entity.Follow;
@@ -72,8 +71,8 @@ public class Member extends BaseTime implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    private List<ChatMessage> sentMessages = new ArrayList<>();
+//    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+//    private List<ChatMessage> sentMessages = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -147,6 +146,4 @@ public class Member extends BaseTime implements UserDetails {
         this.age = updateRequest.age();
         this.gender = updateRequest.gender();
     }
-
-    // getters and setters
 }

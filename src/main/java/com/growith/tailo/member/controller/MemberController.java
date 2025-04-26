@@ -61,7 +61,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원 프로필", description = "프로필 컴포넌트에 사용 될 api ")
-    @GetMapping("/member/profile/{accountId}")
+    @GetMapping("/auth/profile/{accountId}")
     public ResponseEntity<ApiResponse<MemberProfileResponse>> memberProfile(@AuthenticationPrincipal Member member, @PathVariable("accountId") String accountId) {
         MemberProfileResponse memberProfileResponse = memberService.profileService(member, accountId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("요청" + member.getAccountId() + ": 프로필", memberProfileResponse));
