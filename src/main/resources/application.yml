@@ -22,13 +22,7 @@ spring:
     password: ${RABBIT_PASSWORD}
     virtual-host: ${RABBIT_VIRTUAL}
 
-    exchange: test.exchange
-    keroro:
-      binding-key: keroro
-    geroro:
-      binding-key: geroro
-    garuru:
-      binding-key: garuru
+    exchange: chat.exchange
 
 ## Swagger
 springdoc:

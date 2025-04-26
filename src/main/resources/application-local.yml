@@ -20,10 +20,4 @@ spring:
     accessTokenExpirationTime: 3600000
     refreshTokenExpirationTime: 1209600000
   rabbitmq:
-    exchange: test.exchange
-    keroro:
-      binding-key: keroro
-    geroro:
-      binding-key: geroro
-    garuru:
-      binding-key: garuru
+    exchange: chat.exchange
