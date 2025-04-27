@@ -11,5 +11,5 @@ import java.util.List;
 public interface FeedPostImageCustomRepository {
     List<String> findImageUrlsByFeedPost(FeedPost feedPost);
 
-    Page<MemberFeedImageResponse> getMemberFeedImageList(Member loginMember, Pageable pageable, Long accountId);
+    Page<MemberFeedImageResponse> getMemberFeedImageList(Member loginMember, Pageable pageable, String accountId);
 }
