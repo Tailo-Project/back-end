@@ -48,6 +48,9 @@ public class MemberSearchServiceImpl implements MemberSearchService {
         // MemberDocument(getContent) 추출하여 List로 반환
         List<MemberDocument> members = searchHits.get().map(SearchHit::getContent).toList();
 
+        // TODO : 팔로우 관계도 넣어줘야 할지도...
+
+
         return new PageImpl<>(members, pageable, searchHits.getTotalHits());
     }
 

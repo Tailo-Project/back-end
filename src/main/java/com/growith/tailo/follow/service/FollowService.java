@@ -26,12 +26,12 @@ public class FollowService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void follow(Member member, String accountId){
+    public void follow(Member member, String accountId) {
         Member target = findTarget(accountId);
-        if(member.getAccountId().equals(accountId)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"본인은 팔로우할 수 없습니다.");
+        if (member.getAccountId().equals(accountId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인은 팔로우할 수 없습니다.");
         }
-        if(followRepository.existsByFollowerAndFollowing(member,target)){
+        if (followRepository.existsByFollowerAndFollowing(member, target)) {
             throw new ResourceAlreadyExistException("이미 팔로우 된 상태입니다.");
         }
         Follow follow = Follow.builder()
@@ -39,17 +39,21 @@ public class FollowService {
                 .following(target)
                 .build();
         followRepository.save(follow);
+
+        // TODO: 알림추가
     }
+
     @Transactional
-    public void followCancel(Member member, String accountId){
+    public void followCancel(Member member, String accountId) {
         Member target = findTarget(accountId);
 
-        if (!followRepository.existsByFollowerAndFollowing(member,target)){
+        if (!followRepository.existsByFollowerAndFollowing(member, target)) {
             throw new ResourceAlreadyExistException("팔로우 상태가 아닙니다.");
 
         }
-        followRepository.deleteByFollowerAndFollowing(member,target);
+        followRepository.deleteByFollowerAndFollowing(member, target);
     }
+
     public Page<MyFollowResponse> getFollowList(String accountId, Pageable pageable) {
         Member member = findTarget(accountId);
 
@@ -65,10 +69,11 @@ public class FollowService {
                 Page.empty(pageable) : followRepository.findAllFollowMe(member, pageable);
 
     }
+
     private Member findTarget(String accountId) {
-        log.info("팔로우 조회:{}",accountId);
+        log.info("팔로우 조회:{}", accountId);
         Member target = memberRepository.findByAccountId(accountId).orElseThrow(
-                ()-> new ResourceNotFoundException(" 사용자를 찾을 수 없습니다. ")
+                () -> new ResourceNotFoundException(" 사용자를 찾을 수 없습니다. ")
         );
         return target;
     }
