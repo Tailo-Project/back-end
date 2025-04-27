@@ -30,6 +30,15 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    /**
+     * Retrieves a paginated list of feed posts relevant to the specified member, including posts authored by the member or by users the member follows.
+     *
+     * Each feed post includes associated images, hashtags, author details, and counts of likes and comments. Results are ordered by creation date and post ID in descending order.
+     *
+     * @param member the member whose feed is being retrieved
+     * @param pageable pagination information
+     * @return a page of feed post responses containing aggregated post data
+     */
     @Override
     public Page<FeedPostResponse> getFeedPostList(Member member, Pageable pageable) {
 

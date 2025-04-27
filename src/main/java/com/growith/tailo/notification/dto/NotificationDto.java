@@ -14,6 +14,12 @@ public record NotificationDto(
         LocalDateTime createdAt
 ) {
 
+    /**
+     * Creates a NotificationDto from a Notification entity, generating a localized message based on the notification type.
+     *
+     * @param notification the Notification entity to convert
+     * @return a NotificationDto representing the notification with a formatted message
+     */
     public static NotificationDto of(Notification notification) {
         String senderName = notification.getSender().getAccountId();
         String message = switch (notification.getType()) {

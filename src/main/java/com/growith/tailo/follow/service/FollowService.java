@@ -32,6 +32,18 @@ public class FollowService {
     @Value("${app.base-url}")
     private String baseUrl;
 
+    /**
+     * Creates a follow relationship between the given member and the target member identified by accountId.
+     *
+     * Throws an exception if a member attempts to follow themselves or if the follow relationship already exists.
+     * Sends a follow notification to the target member upon successful creation.
+     *
+     * @param member the member initiating the follow
+     * @param accountId the account ID of the member to be followed
+     * @return a success message indicating the follow was successful
+     * @throws ResponseStatusException if a member tries to follow themselves
+     * @throws ResourceAlreadyExistException if the follow relationship already exists
+     */
     @Transactional
     public String follow(Member member, String accountId){
         Member target = findTarget(accountId);
@@ -54,6 +66,14 @@ public class FollowService {
         return "팔로우 성공";
     }
 
+    /**
+     * Cancels an existing follow relationship between the given member and the target member identified by accountId.
+     *
+     * @param member the member initiating the unfollow action
+     * @param accountId the account ID of the member to unfollow
+     * @return a success message indicating the follow has been canceled
+     * @throws ResourceAlreadyExistException if the member is not currently following the target
+     */
     @Transactional
 
     public String followCancel(Member member, String accountId) {
@@ -70,6 +90,13 @@ public class FollowService {
         return "팔로우 취소 성공";
     }
 
+    /**
+     * Retrieves a paginated list of members that the specified user is following.
+     *
+     * @param accountId the account ID of the member whose followings are to be listed
+     * @param pageable pagination information
+     * @return a page of members the user is following, wrapped in {@link MyFollowResponse}; returns an empty page if the user follows no one
+     */
     public Page<MyFollowResponse> getFollowList(String accountId, Pageable pageable) {
         Member member = findTarget(accountId);
 
@@ -78,6 +105,13 @@ public class FollowService {
 
     }
 
+    /**
+     * Retrieves a paginated list of followers for the specified member.
+     *
+     * @param accountId the account ID of the member whose followers are to be listed
+     * @param pageable pagination information
+     * @return a page of followers wrapped in {@link FollowMeResponse}; empty if the member has no followers
+     */
     public Page<FollowMeResponse> getTargetList(String accountId, Pageable pageable) {
         Member member = findTarget(accountId);
 
@@ -86,6 +120,13 @@ public class FollowService {
 
     }
 
+    /**
+     * Retrieves a member by account ID or throws an exception if not found.
+     *
+     * @param accountId the unique account identifier of the member to retrieve
+     * @return the member associated with the given account ID
+     * @throws ResourceNotFoundException if no member exists with the specified account ID
+     */
     private Member findTarget(String accountId) {
         log.info("팔로우 조회:{}", accountId);
         Member target = memberRepository.findByAccountId(accountId).orElseThrow(
