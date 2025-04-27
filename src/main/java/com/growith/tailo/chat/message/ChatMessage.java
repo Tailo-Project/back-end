@@ -1,13 +1,17 @@
 package com.growith.tailo.chat.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.growith.tailo.chat.room.ChatRoom;
-import com.growith.tailo.chat.member.ChatMember;
+//import com.growith.tailo.chat.member.ChatMember;
 import com.growith.tailo.common.entity.BaseTime;
+import com.growith.tailo.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "chat_messages")
@@ -15,20 +19,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatMessage extends BaseTime {
+public class ChatMessage extends BaseTime implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_message_id")
+    @Column
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // 기본적인 Lazy 로딩
     @JoinColumn(name = "sender_id")
-    private ChatMember sender;
+    private Member sender;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_room_id")
+    @ManyToOne(fetch = FetchType.LAZY) // 기본적인 Lazy 로딩
+    @JoinColumn
     private ChatRoom chatRoom;
 
     @Column(nullable = false)
     private String content;
+
+    // 직렬화 시 불필요한 관계를 제외할 수 있습니다
+    @JsonIgnore
+    public Member getSender() {
+        return sender;
+    }
 }

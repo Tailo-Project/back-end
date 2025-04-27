@@ -18,38 +18,50 @@ public class RabbitMQConfig {
     @Value("${RABBIT_HOST}")
     private String host;
 
-    @Value("${RABBIT_PORT}")
-    private int port;
-
     @Value("${RABBIT_USERNAME}")
     private String username;
 
     @Value("${RABBIT_PASSWORD}")
     private String password;
 
-    @Value("${spring.rabbitmq.exchange}")
+    @Value("${spring.rabbitmq.chat-exchange}")
     private String chatExchange;
+    @Value("${spring.rabbitmq.chat-routing-key}")
+    private String chatRouting;
+    @Value("${spring.rabbitmq.chat-queue}")
+    private String chatQueue;
 
+    // 채팅
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(chatExchange);
     }
+    @Bean
+    public Queue chatQueue(){
+        return new Queue(chatQueue);
+    }
+    @Bean
+    public Binding chatBinding(Queue chatQueue, TopicExchange chatExchange){
+        return BindingBuilder.bind(chatQueue)
+                .to(chatExchange)
+                .with(chatRouting+"*");
+    }
 
+    // admin
     @Bean
     public AmqpAdmin amqpAdmin() {
         return new RabbitAdmin(connectionFactory());
     }
-
+    // 메시지 직렬화 및 역 직렬화
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
-
+    // 실제 레빗엠큐 적용 템플릿
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
         template.setMessageConverter(jsonMessageConverter());
-        template.setExchange(chatExchange);
         return template;
     }
 
@@ -58,9 +70,9 @@ public class RabbitMQConfig {
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory factory = new CachingConnectionFactory();
-        factory.setHost("localhost");
-        factory.setUsername("guest");
-        factory.setPassword("guest");
+        factory.setHost(host);
+        factory.setUsername(username);
+        factory.setPassword(password);
         return factory;
     }
 }

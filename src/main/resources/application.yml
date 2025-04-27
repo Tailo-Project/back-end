@@ -22,7 +22,9 @@ spring:
     password: ${RABBIT_PASSWORD}
     virtual-host: ${RABBIT_VIRTUAL}
 
-    exchange: chat.exchange
+    chat-exchange: ${CHAT_EXCHANGE}
+    chat-routing-key: ${CHAT_ROUTING}
+    chat-queue: ${CHAT_QUEUE}
 
 ## Swagger
 springdoc:

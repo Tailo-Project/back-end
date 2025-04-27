@@ -19,5 +19,4 @@ spring:
     secret: ${JWT_SECRET}
     accessTokenExpirationTime: 3600000
     refreshTokenExpirationTime: 1209600000
-  rabbitmq:
-    exchange: chat.exchange
+

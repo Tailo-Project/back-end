@@ -22,7 +22,7 @@ function connect(event) {
     if(username) {
         usernamePage.classList.add('hidden');
         chatPage.classList.remove('hidden');
-
+        // SockJS 사용해야 함
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
@@ -34,7 +34,8 @@ function connect(event) {
 
 function onConnected() {
     // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/chat/room/1', onMessageReceived);
+    // 구독 경로 roomId 를 받아와야 함
+    stompClient.subscribe(`/topic/chat/room/${roomId}`, onMessageReceived);
 
     // Tell your username to the server
     stompClient.send("/app/chat.addUser",
@@ -60,7 +61,7 @@ function sendMessage(event) {
             roomId: 1, // 방 ID가 필요하면 넣고, 아니면 삭제
             messageType: 'CHAT' // type → messageType 으로 변경
         };
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        stompClient.send("/tailo/chat", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();

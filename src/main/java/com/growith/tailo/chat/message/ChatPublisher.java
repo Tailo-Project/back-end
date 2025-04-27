@@ -11,10 +11,12 @@ public class ChatPublisher {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${spring.rabbitmq.exchange}")
+    @Value("${spring.rabbitmq.chat-exchange}")
     private String exchangeName;
 
+    @Value("${spring.rabbitmq.chat-routing-key}")
+    private String chatRoutingKey;
     public void send(ChatDTO message){
-        rabbitTemplate.convertAndSend(exchangeName, "chat.room."+message.roomId(),message);
+        rabbitTemplate.convertAndSend(exchangeName, chatRoutingKey+message.roomId(),message);
     }
 }
