@@ -33,7 +33,7 @@ public class FollowService {
     private String baseUrl;
 
     @Transactional
-    public String follow(Member member, String accountId) {
+    public String follow(Member member, String accountId){
         Member target = findTarget(accountId);
         if (member.getAccountId().equals(accountId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인은 팔로우할 수 없습니다.");
@@ -55,14 +55,18 @@ public class FollowService {
     }
 
     @Transactional
+
     public String followCancel(Member member, String accountId) {
+  
         Member target = findTarget(accountId);
 
         if (!followRepository.existsByFollowerAndFollowing(member, target)) {
             throw new ResourceAlreadyExistException("팔로우 상태가 아닙니다.");
 
         }
-        followRepository.deleteByFollowerAndFollowing(member, target);
+
+        followRepository.deleteByFollowerAndFollowing(member,target);
+
         return "팔로우 취소 성공";
     }
 
