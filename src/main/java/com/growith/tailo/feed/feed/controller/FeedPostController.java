@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -94,7 +95,10 @@ public class FeedPostController {
             Pageable pageable,
             @AuthenticationPrincipal Member member) {
 
-        Page<FeedPostResponse> feedPostList = feedPostService.getFeedPostList(member, pageable);
+        // 정렬은 무조건 update 내림차순으로 하게끔 함
+        Pageable noSortPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<FeedPostResponse> feedPostList = feedPostService.getFeedPostList(member, noSortPageable);
 
         FeedPostListResponse response = new FeedPostListResponse(feedPostList.getContent(), new Pagination(
                 feedPostList.getNumber(),
