@@ -92,7 +92,7 @@ public class FeedPostServiceImpl implements FeedPostService {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
         }
 
-        FeedPostResponse result = feedPostRepository.getFeedPost(feedId);
+        FeedPostResponse result = feedPostRepository.getFeedPost(feedId, member);
 
         return result;
     }

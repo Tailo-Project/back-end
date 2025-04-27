@@ -76,7 +76,11 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                                         .where(postLike.feedPost.eq(feedPost)),
                                 JPAExpressions.select(comment.count())
                                         .from(comment)
-                                        .where(comment.feedPost.eq(feedPost))
+                                        .where(comment.feedPost.eq(feedPost)),
+                                JPAExpressions.selectOne()
+                                        .from(postLike)
+                                        .where(postLike.feedPost.eq(feedPost).and(postLike.member.eq(member)))
+                                        .exists()
                         )
                 ));
 
@@ -136,7 +140,7 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
     }
 
     @Override
-    public FeedPostResponse getFeedPost(Long feedId) {
+    public FeedPostResponse getFeedPost(Long feedId, Member member) {
         QFeedPost feedPost = QFeedPost.feedPost;
         QComment comment = QComment.comment;
         QPostLike postLike = QPostLike.postLike;
@@ -168,7 +172,11 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                                         .where(postLike.feedPost.eq(feedPost)),
                                 JPAExpressions.select(comment.count())
                                         .from(comment)
-                                        .where(comment.feedPost.eq(feedPost))
+                                        .where(comment.feedPost.eq(feedPost)),
+                                JPAExpressions.selectOne()
+                                        .from(postLike)
+                                        .where(postLike.feedPost.eq(feedPost).and(postLike.member.eq(member)))
+                                        .exists()
                         )
                 )).get(feedId);
 
