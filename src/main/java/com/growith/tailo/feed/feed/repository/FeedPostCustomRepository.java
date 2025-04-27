@@ -9,5 +9,5 @@ public interface FeedPostCustomRepository {
 
     Page<FeedPostResponse> getFeedPostList(Member member, Pageable pageable);
 
-    FeedPostResponse getFeedPost(Long feedId);
+    FeedPostResponse getFeedPost(Long feedId, Member member);
 }
