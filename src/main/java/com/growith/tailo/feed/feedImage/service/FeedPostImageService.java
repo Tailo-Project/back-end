@@ -21,5 +21,5 @@ public interface FeedPostImageService {
 
     void deleteImagesByFeedPost(FeedPost feedPost);
 
-    Page<MemberFeedImageResponse> getMemberFeedImageList(Member member, Pageable pageable, Long accountId);
+    Page<MemberFeedImageResponse> getMemberFeedImageList(Member member, Pageable pageable, String accountId);
 }
