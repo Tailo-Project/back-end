@@ -9,7 +9,6 @@ import com.growith.tailo.feed.feedImage.service.FeedPostImageService;
 import com.growith.tailo.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +34,7 @@ public class FeedImageController {
             })
     @GetMapping("/api/feed/{accountId}/images")
     public ResponseEntity<ApiResponse<MemberFeedImageListResponse>> getMemberFeedImageList(
-            @PathVariable("accountId") Long accountId,
+            @PathVariable("accountId") String accountId,
             Pageable pageable,
             @AuthenticationPrincipal Member member
     ) {
