@@ -54,14 +54,14 @@ public class MemberController {
     }
 
     @Operation(summary = "아이디 중복 확인", description = "사용할 수 있는 아이디인지 확인")
-    @GetMapping("/member/duplicate/{accountId}")
+    @GetMapping("/auth/duplicate/{accountId}")
     public ResponseEntity<ApiResponse<String>> duplicateAccount(@PathVariable("accountId") String accountId) {
         memberService.validateAccountId(accountId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("사용 가능한 아이디입니다."));
     }
 
-    @Operation(summary = "회원 프로필", description = "프로필 컴포넌트에 사용 될 api ")
-    @GetMapping("/auth/profile/{accountId}")
+    @Operation(summary = "선택한 회원의 프로필 조회", description = "프로필 컴포넌트에 사용 될 api 팔로우 수, 팔로잉 수, 게시물 수, 팔로잉 여부, 차단 여부 반환 ")
+    @GetMapping("/member/profile/{accountId}")
     public ResponseEntity<ApiResponse<MemberProfileResponse>> memberProfile(@AuthenticationPrincipal Member member, @PathVariable("accountId") String accountId) {
         MemberProfileResponse memberProfileResponse = memberService.profileService(member, accountId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("요청" + member.getAccountId() + ": 프로필", memberProfileResponse));
