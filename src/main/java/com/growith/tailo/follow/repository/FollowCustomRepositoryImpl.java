@@ -49,8 +49,8 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository {
     public Page<FollowMeResponse> findAllFollowMe(Member member, Pageable pageable) {
 
     QFollow follow = QFollow.follow;
-
-    // 나를 팔로우한 사람
+    QFollow subFollow = new QFollow("subFollow");
+        // 나를 팔로우한 사람
     List<FollowMeResponse> content = queryFactory
             .select(Projections.constructor(FollowMeResponse.class, //반환 클래스에 자동 매핑
                     follow.follower.id,
@@ -59,9 +59,9 @@ public class FollowCustomRepositoryImpl implements FollowCustomRepository {
                     follow.follower.profileImageUrl,
                     JPAExpressions
                             .selectOne()
-                            .from(follow)
-                            .where(follow.follower.eq(member)
-                                    .and(follow.following.eq(member)))
+                            .from(subFollow)
+                            .where(subFollow.follower.eq(member)                // 내가
+                                    .and(subFollow.following.eq(follow.follower))) // 이 사람을 팔로우하는지
                             .exists()
             ))
             .from(follow)

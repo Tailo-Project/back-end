@@ -20,3 +20,5 @@ spring:
     accessTokenExpirationTime: 3600000
     refreshTokenExpirationTime: 1209600000
 
+app:
+  base-url: http://localhost:8080 # 알림 클릭 시 호출하는 url

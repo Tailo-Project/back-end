@@ -1,5 +1,6 @@
 package com.growith.tailo.member.service;
 
+import com.growith.tailo.block.repository.BlockRepository;
 import com.growith.tailo.common.exception.ResourceAlreadyExistException;
 import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.common.handler.ImageUploadHandler;
@@ -37,6 +38,8 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final ImageUploadHandler imageUploadHandler;
     private final FollowRepository followRepository;
+    private final BlockRepository blockRepository;
+
     @Transactional
     public AuthResponse socialLoginService(SocialLoginRequest request) {
         String email;
@@ -110,6 +113,10 @@ public class MemberService {
         if(!member.getAccountId().equals(accountId)){
             Member target = memberRepository.findByAccountId(accountId).orElseThrow(
                     ()->new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
+            if(blockRepository.existsByBlockerAndBlocked(member,target)){ //차단 되어있는 프로필이면 차단 여부 반영 후 바로 리턴
+                MemberProfileResponse profileResponse = memberRepository.findByMemberProfile(accountId);
+                return profileResponse.toBuilder().isBlock(true).build();
+            }
             if(followRepository.existsByFollowerAndFollowing(member,target)){
                 MemberProfileResponse profileResponse = memberRepository.findByMemberProfile(accountId);
                 return profileResponse.toBuilder().isFollow(true).build();
@@ -124,9 +131,6 @@ public class MemberService {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
         }
 
-        if (!member.getAccountId().equals(updateRequest.accountId())) {
-            validateAccountId(updateRequest.accountId());
-        }
         // 기존 이미지 삭제 처리
         if (profileImage != null && !profileImage.isEmpty()) {
             String oldImageUrl = member.getProfileImageUrl();
@@ -163,4 +167,3 @@ public class MemberService {
     }
 
 }
-

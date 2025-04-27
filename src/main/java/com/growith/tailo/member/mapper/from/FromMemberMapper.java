@@ -5,7 +5,6 @@ import com.growith.tailo.member.dto.response.MemberDetailResponse;
 import com.growith.tailo.member.dto.response.MemberProfileResponse;
 import com.growith.tailo.member.entity.Member;
 
-
 public class FromMemberMapper {
     public static AuthResponse fromMemberLogin(String email, String accountId, String accessToken){
         return AuthResponse

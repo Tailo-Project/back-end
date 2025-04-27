@@ -10,7 +10,7 @@ public record MemberProfileResponse(String nickname,
                                     Long countFollower,
                                     Long countFollowing,
                                     String profileImageUrl,
-                                    Boolean isFollow) {
-
-
+                                    Boolean isFollow,
+                                    Boolean isBlock
+                                    ) {
 }

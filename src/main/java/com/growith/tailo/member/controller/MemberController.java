@@ -2,6 +2,8 @@ package com.growith.tailo.member.controller;
 
 import com.growith.tailo.common.dto.response.ApiResponse;
 import com.growith.tailo.common.util.ApiResponses;
+import com.growith.tailo.feed.likes.dto.response.LikedFeedIdsResponse;
+import com.growith.tailo.feed.likes.service.PostLikeService;
 import com.growith.tailo.member.dto.request.SignUpRequest;
 import com.growith.tailo.member.dto.request.SocialLoginRequest;
 import com.growith.tailo.member.dto.request.UpdateRequest;
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PostLikeService postLikeService;
 
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 통해 토큰 발급")
     @PostMapping("/auth/sign-in")
@@ -46,7 +49,7 @@ public class MemberController {
     @Operation(summary = "회원가입", description = "JSON과 프로필 이미지를 함께 전송합니다.")
     @PostMapping(value = "/auth/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<AuthResponse>>  signUp(
-             @RequestPart("request") @Valid SignUpRequest request,
+            @RequestPart("request") @Valid SignUpRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
         AuthResponse authResponse = memberService.signUpService(request,profileImage);
@@ -60,7 +63,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("사용 가능한 아이디입니다."));
     }
 
-    @Operation(summary = "선택한 회원의 프로필 조회", description = "프로필 컴포넌트에 사용 될 api 팔로우 수, 팔로잉 수, 게시물 수, 팔로잉 여부, 차단 여부 반환 ")
+    @Operation(summary = "회원 프로필", description = "프로필 컴포넌트에 사용 될 api ")
     @GetMapping("/member/profile/{accountId}")
     public ResponseEntity<ApiResponse<MemberProfileResponse>> memberProfile(@AuthenticationPrincipal Member member, @PathVariable("accountId") String accountId) {
         MemberProfileResponse memberProfileResponse = memberService.profileService(member, accountId);
@@ -81,5 +84,16 @@ public class MemberController {
                                                                     @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         MemberDetailResponse response = memberService.updateProfile(member, updateRequest, profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(response));
+    }
+
+    @Operation(
+            summary = "좋아요한 피드 id 목록 조회",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "좋아요한 피드 id 목록 조회 성공"),
+            })
+    @GetMapping("/liked-feeds")
+    public ResponseEntity<ApiResponse<LikedFeedIdsResponse>> getLikedFeedIds(@AuthenticationPrincipal Member member) {
+        LikedFeedIdsResponse result = postLikeService.getLikedFeedIds(member);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("좋아요한 피드 id 목록 조회 성공", result));
     }
 }

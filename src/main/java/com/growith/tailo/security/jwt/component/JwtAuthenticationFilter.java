@@ -1,10 +1,5 @@
 package com.growith.tailo.security.jwt.component;
 
-import com.growith.tailo.common.exception.ResourceNotFoundException;
-import com.growith.tailo.common.exception.UnauthorizedAccessException;
-import com.growith.tailo.member.entity.Member;
-import com.growith.tailo.security.jwt.entity.RefreshToken;
-import com.growith.tailo.security.jwt.repository.RefreshTokenRepository;
 import com.growith.tailo.security.jwt.service.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -13,17 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.Optional;
 
 // 클라이언트 요청마다 실행되는 필터 JWT로 사용자 인증 체크
 @Slf4j
@@ -37,8 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (request.getRequestURI().startsWith("/api/auth")|| request.getRequestURI().startsWith("/ws/chat")) {
-            filterChain.doFilter(request, response);
+
+        if(request.getRequestURI().startsWith("/api/auth")){
+            filterChain.doFilter(request,response);
             return;
         }
 
@@ -46,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = null;
         String memberAccountId = null;
         String tokenPrefix = "Bearer ";
-        // 레퀘스트 헤더에서 토큰만 파싱
+        // 리퀘스트 헤더에서 토큰만 파싱
         if (header != null && header.startsWith(tokenPrefix)) {
             accessToken = header.substring(tokenPrefix.length());
 
@@ -60,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write("{\"message\": \"액세스 토큰이 만료되었습니다.\"}");
+                response.getWriter().write("{\"message\": \"재 요청이 필요합니다.\"}");
                 response.getWriter().flush();
                 return;
             }
@@ -79,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write("{\"message\": \"토큰 인증 정보가 유효하지 않습니다.\"}");
+                response.getWriter().write("{\"message\": \"회원 정보가 올바르지 않습니다.\"}");
                 response.getWriter().flush();
                 return;
             }

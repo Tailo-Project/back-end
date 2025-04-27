@@ -42,16 +42,12 @@ public class JwtUtil implements Serializable {
     @Value("${spring.jwt.refreshTokenExpirationTime}")
     private long refreshTokenExpirationTime;
 
-
     // 시크릿 키를 바이트 배열로 변환하여 Key 객체 반환
-
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-
     // 토큰에서 사용자 이름(subject) 추출
-
     public String getUsernameFromToken(String token) {
         log.debug("토큰에서 사용자 이름 추출 시도");
         return getClaimFromToken(token, Claims::getSubject);
@@ -63,13 +59,11 @@ public class JwtUtil implements Serializable {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-
     // 클레임에서 필요한 값만 추출
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
-
 
     //JWT 토큰에서 모든 Claims 추출
     private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException {
@@ -86,10 +80,9 @@ public class JwtUtil implements Serializable {
             throw e;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 파싱 오류 발생", e);
-            throw new RuntimeException("잘못된 JWT 토큰입니다.");
+            throw new RuntimeException("잘못된 정보입니다.");
         }
     }
-
 
     //토큰 만료 여부 확인
     public Boolean isTokenExpired(String token) {
@@ -97,7 +90,6 @@ public class JwtUtil implements Serializable {
         log.debug("토큰 만료 여부: {}", expired);
         return expired;
     }
-
 
     // Access Token 생성
     public String generateAccessToken(Member member) {
@@ -109,7 +101,6 @@ public class JwtUtil implements Serializable {
                 .collect(Collectors.joining(",")));
         return doGenerateAccessToken(claims, member.getUsername());
     }
-
 
     // 실제 Access Token 생성 로직
     private String doGenerateAccessToken(Map<String, Object> claims, String subject) {
@@ -125,15 +116,11 @@ public class JwtUtil implements Serializable {
         return token;
     }
 
-
     // 토큰 검증 (username 일치 & 만료되지 않음)
     public Boolean validateAccessToken(String token, UserDetails userDetails) {
         final String userName = getUsernameFromToken(token);
-        boolean valid = userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
-
-        return valid;
+        return userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
-
 
     // Refresh Token 생성
     public String generateRefreshToken(UserDetails userDetails) {
@@ -145,7 +132,6 @@ public class JwtUtil implements Serializable {
                 .collect(Collectors.joining(",")));
         return doGenerateRefreshToken(claims, userDetails.getUsername());
     }
-
 
     // 실제 Refresh Token 생성 로직
     private String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
@@ -161,9 +147,7 @@ public class JwtUtil implements Serializable {
         return token;
     }
 
-
     // Refresh 토큰의 유효성 검사 (만료 여부만 확인)
-
     public Boolean validateRefreshToken(String token) {
         boolean valid = !isTokenExpired(token);
         log.debug("Refresh 토큰 유효성 검사 결과: {}", valid);
