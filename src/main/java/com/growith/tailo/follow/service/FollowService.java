@@ -26,7 +26,7 @@ public class FollowService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void follow(Member member, String accountId) {
+    public String follow(Member member, String accountId) {
         Member target = findTarget(accountId);
         if (member.getAccountId().equals(accountId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인은 팔로우할 수 없습니다.");
@@ -41,10 +41,12 @@ public class FollowService {
         followRepository.save(follow);
 
         // TODO: 알림추가
+
+        return "팔로우 성공";
     }
 
     @Transactional
-    public void followCancel(Member member, String accountId) {
+    public String followCancel(Member member, String accountId) {
         Member target = findTarget(accountId);
 
         if (!followRepository.existsByFollowerAndFollowing(member, target)) {
@@ -52,6 +54,8 @@ public class FollowService {
 
         }
         followRepository.deleteByFollowerAndFollowing(member, target);
+        return "팔로우 취소 성공";
+
     }
 
     public Page<MyFollowResponse> getFollowList(String accountId, Pageable pageable) {

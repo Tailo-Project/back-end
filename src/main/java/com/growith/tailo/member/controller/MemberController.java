@@ -57,7 +57,7 @@ public class MemberController {
     }
 
     @Operation(summary = "아이디 중복 확인", description = "사용할 수 있는 아이디인지 확인")
-    @GetMapping("/member/duplicate/{accountId}")
+    @GetMapping("/auth/duplicate/{accountId}")
     public ResponseEntity<ApiResponse<String>> duplicateAccount(@PathVariable("accountId") String accountId) {
         memberService.validateAccountId(accountId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success("사용 가능한 아이디입니다."));
