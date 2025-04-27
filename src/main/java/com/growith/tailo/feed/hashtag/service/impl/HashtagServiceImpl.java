@@ -43,12 +43,16 @@ public class HashtagServiceImpl implements HashtagService {
             hashtag.increaseCount();
             hashtagRepository.save(hashtag);
 
-            FeedPostHashtag linkHashtag = FeedPostHashtag.builder()
-                    .feedPost(feedPost)
-                    .hashtags(hashtag)
-                    .build();
+            boolean alreadyLinked = feedPostHashtagRepository.existsByFeedPostAndHashtags(feedPost, hashtag);
 
-            feedPostHashtagRepository.save(linkHashtag);
+            if (!alreadyLinked) {
+                FeedPostHashtag linkHashtag = FeedPostHashtag.builder()
+                        .feedPost(feedPost)
+                        .hashtags(hashtag)
+                        .build();
+
+                feedPostHashtagRepository.save(linkHashtag);
+            }
         }
     }
 
