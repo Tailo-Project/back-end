@@ -22,29 +22,36 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
 
-    // 룸을 생성하는 메서드
-    public ChatRoom getChatRoom(Member member, String accountId) {
-        Member targetMember = memberRepository.findByAccountId(accountId).orElseThrow(()-> new ResourceNotFoundException("찾는 멤버가 없습니다."));
-        // 기존에 두 멤버가 존재하는 룸이 있는지 확인
-        Optional<ChatRoom> existingRoom = chatRoomRepository.findByChatMember1AndChatMember2OrChatMember1AndChatMember2(member, targetMember, targetMember,member);
+    // 룸 조회
+    public ChatRoomResponse getChatRoom(Member member,Long roomId) {
 
-        // 기존 룸이 있으면 그 룸 반환
-        if (existingRoom.isPresent()) {
-            return existingRoom.get();
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()-> new ResourceNotFoundException("해당 채팅방이 없습니다."));
+
+        if (!chatRoom.getChatMember1().equals(member) && !chatRoom.getChatMember2().equals(member)){
+            log.info("참여멤버1 {}, 참여 멤버2 {}",chatRoom.getChatMember1(), chatRoom.getChatMember2());
+            throw new ResourceNotFoundException("해당 멤버가 참여중인 방이 없습니다.");
         }
+           return  ChatRoomResponse.fromEntity(chatRoom);
 
-        // 기존 룸이 없다면 새로운 룸을 생성
+    }
+    public ChatRoomResponse createRoom(Member member, String accountId){
+        Member targetMember = memberRepository.findByAccountId(accountId).orElseThrow(()-> new ResourceNotFoundException("찾는 멤버가 없습니다."));
+        Optional<ChatRoom> existingRoom = chatRoomRepository.findByChatMember1AndChatMember2OrChatMember1AndChatMember2(member, targetMember, targetMember,member);
+        if(existingRoom.isPresent()){
+            return getChatRoom(member,existingRoom.get().getId());
+        }
         ChatRoom chatRoom = ChatRoom.builder()
                 .roomName(createRoomName(member,targetMember))
                 .chatMember1(member)
                 .chatMember2(targetMember)
                 .build();
-
-        return chatRoomRepository.save(chatRoom);
+        chatRoomRepository.save(chatRoom);
+        return  ChatRoomResponse.fromEntity(chatRoom);
     }
     // 룸 이름을 생성하는 메서드
     private String createRoomName(Member member, Member targetMember) {
         // 룸 이름을 유니크하고 의미 있게 만들 수 있습니다.
+        log.info("{},{} 의 채팅방", member.getAccountId(),targetMember.getAccountId());
         return member.getAccountId() + "," + targetMember.getAccountId();
     }
 }

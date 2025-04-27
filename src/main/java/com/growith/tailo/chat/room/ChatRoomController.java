@@ -16,10 +16,17 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    @Operation(summary = "채팅방 생성", description = "로그인 멤버와 요청 멤버의 accountID 로 채팅방 조회 후 생성")
-    @GetMapping
-    public ApiResponse<ChatRoom> create(@AuthenticationPrincipal Member member, @RequestParam("accountId") String accountId ){
-        ChatRoom chatRoom = chatRoomService.getChatRoom(member,accountId);
+    @Operation(summary = "채팅방 조회", description = "로그인 멤버와 요청 멤버와 채팅방 ID 로 채팅방 조회")
+    @GetMapping("/{roomId}")
+    public ApiResponse<ChatRoomResponse> getRoom(@AuthenticationPrincipal Member member, @PathVariable("roomId")Long roomId ){
+        ChatRoomResponse chatRoom = chatRoomService.getChatRoom(member,roomId);
+        return ApiResponses.success(chatRoom);
+    }
+
+    @Operation(summary = "채팅방 생성", description = "로그인 멤버와 대상 멤버의 accountId 로 채팅방 생성")
+    @PostMapping
+    public ApiResponse<ChatRoomResponse> create(@AuthenticationPrincipal Member member, @RequestParam("accountId")String accountId){
+        ChatRoomResponse chatRoom = chatRoomService.createRoom(member, accountId);
         return ApiResponses.success(chatRoom);
     }
 

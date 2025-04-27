@@ -24,27 +24,65 @@ public class RabbitMQConfig {
     @Value("${RABBIT_PASSWORD}")
     private String password;
 
-    @Value("${spring.rabbitmq.chat-exchange}")
+    @Value("${spring.rabbitmq.chat.exchange}")
     private String chatExchange;
-    @Value("${spring.rabbitmq.chat-routing-key}")
+    @Value("${spring.rabbitmq.chat.routing-key}")
     private String chatRouting;
-    @Value("${spring.rabbitmq.chat-queue}")
+    @Value("${spring.rabbitmq.chat.queue}")
     private String chatQueue;
 
-    // 채팅
-    @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(chatExchange);
+    @Value("${spring.rabbitmq.notification.exchange}")
+    private String notificationExchange;
+    @Value("${spring.rabbitmq.notification.routing-key}")
+    private String notificationRouting;
+    @Value("${spring.rabbitmq.notification.queue}")
+    private String notificationQueue;
+
+    // 공통 메서드로 Exchange, Queue, Binding 설정
+    private TopicExchange createTopicExchange(String exchangeName) {
+        return new TopicExchange(exchangeName);
     }
-    @Bean
-    public Queue chatQueue(){
-        return new Queue(chatQueue);
+
+    private Queue createQueue(String queueName) {
+        return new Queue(queueName);
     }
+
+    private Binding createBinding(Queue queue, TopicExchange exchange, String routingKey) {
+        return BindingBuilder.bind(queue)
+                .to(exchange)
+                .with(routingKey + "*");
+    }
+
+    // 채팅 관련 Bean 설정
     @Bean
-    public Binding chatBinding(Queue chatQueue, TopicExchange chatExchange){
-        return BindingBuilder.bind(chatQueue)
-                .to(chatExchange)
-                .with(chatRouting+"*");
+    public TopicExchange chatExchange() {
+        return createTopicExchange(chatExchange);
+    }
+
+    @Bean
+    public Queue chatQueue() {
+        return createQueue(chatQueue);
+    }
+
+    @Bean
+    public Binding chatBinding() {
+        return createBinding(chatQueue(), chatExchange(), chatRouting);
+    }
+
+    // 알림 관련 Bean 설정
+    @Bean
+    public TopicExchange notifyExchange() {
+        return createTopicExchange(notificationExchange);
+    }
+
+    @Bean
+    public Queue notifyQueue() {
+        return createQueue(notificationQueue);
+    }
+
+    @Bean
+    public Binding notifyBinding() {
+        return createBinding(notifyQueue(), notifyExchange(), notificationRouting);
     }
 
     // admin

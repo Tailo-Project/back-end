@@ -19,7 +19,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatMessage extends BaseTime implements Serializable {
+public class ChatMessage extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -36,9 +36,4 @@ public class ChatMessage extends BaseTime implements Serializable {
     @Column(nullable = false)
     private String content;
 
-    // 직렬화 시 불필요한 관계를 제외할 수 있습니다
-    @JsonIgnore
-    public Member getSender() {
-        return sender;
-    }
 }

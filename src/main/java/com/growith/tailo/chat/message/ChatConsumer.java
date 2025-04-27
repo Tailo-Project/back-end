@@ -30,10 +30,11 @@ public class ChatConsumer {
     public static final String DESTINATION="/topic/chat/room/";
 
     @Transactional
-    @RabbitListener(queues = "${spring.rabbitmq.chat-queue}" )
+    @RabbitListener(queues = "${spring.rabbitmq.chat.queue}" )
     public void receiveChatMessage(ChatDTO message){
-        ChatRoom chatRoom = chatRoomRepository.findById(message.roomId()).orElseThrow(()->new ResourceNotFoundException(""));
-        Member chatMember = memberRepository.findByAccountId(message.sender()).orElseThrow(()->new ResourceNotFoundException(""));
+        log.info("컨슈머 : 메시지 {} ",message.toString());
+        ChatRoom chatRoom = chatRoomRepository.findById(message.roomId()).orElseThrow(()->new ResourceNotFoundException("채팅방을 찾을 수 없습니다."+message.roomId()));
+        Member chatMember = memberRepository.findByAccountId(message.sender()).orElseThrow(()->new ResourceNotFoundException("사용자를 찾을 수 없습니다."+message.sender()));
         ChatMessage chatMessage = ChatMessage.builder()
                 .chatRoom(chatRoom)
                 .content(message.content())

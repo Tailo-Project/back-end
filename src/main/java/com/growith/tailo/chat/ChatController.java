@@ -21,7 +21,6 @@ import org.springframework.stereotype.Controller;
 public class ChatController {
 
     private final ChatPublisher chatPublisher;
-    private final MemberRepository memberRepository;
 
     @MessageMapping("/chat")
     public void sendMessage(@Payload ChatDTO chatMessage) {
