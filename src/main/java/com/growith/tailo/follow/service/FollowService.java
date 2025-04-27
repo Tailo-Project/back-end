@@ -8,8 +8,11 @@ import com.growith.tailo.follow.entity.Follow;
 import com.growith.tailo.follow.repository.FollowRepository;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
+import com.growith.tailo.notification.enums.NotificationType;
+import com.growith.tailo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
+    private final NotificationService notificationService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Transactional
     public String follow(Member member, String accountId) {
@@ -40,20 +47,25 @@ public class FollowService {
                 .build();
         followRepository.save(follow);
 
-        // TODO: 알림추가
+        // TODO: MQ 도입 시 비동기로 변경 예정
+        String notificationUrl = String.format("%s/api/member/profile/%s", baseUrl, member.getAccountId());
+        notificationService.send(target, member, NotificationType.FOLLOW, notificationUrl);
 
         return "팔로우 성공";
     }
 
     @Transactional
     public String followCancel(Member member, String accountId) {
+
         Member target = findTarget(accountId);
 
         if (!followRepository.existsByFollowerAndFollowing(member, target)) {
             throw new ResourceAlreadyExistException("팔로우 상태가 아닙니다.");
 
         }
+
         followRepository.deleteByFollowerAndFollowing(member, target);
+
         return "팔로우 취소 성공";
 
     }

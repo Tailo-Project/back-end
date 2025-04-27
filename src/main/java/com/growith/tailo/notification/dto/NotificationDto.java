@@ -20,6 +20,7 @@ public record NotificationDto(
             case LIKE -> senderName + "님이 피드에 좋아요를 눌렀습니다.";
             case COMMENT -> senderName + "님이 댓글을 남겼습니다.";
             case DM -> senderName + "님이 메시지를 보냈습니다.";
+            case FOLLOW -> senderName + "님이 팔로우 하였습니다.";
         };
 
         return NotificationDto.builder()
