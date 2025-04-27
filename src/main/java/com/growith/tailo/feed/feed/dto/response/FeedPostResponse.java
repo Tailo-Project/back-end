@@ -22,6 +22,7 @@ public class FeedPostResponse {
     LocalDateTime updatedAt;
     long likesCount;
     long commentsCount;
+    boolean isLiked;
 
     public FeedPostResponse(Long feedId,
                             String content,
@@ -31,7 +32,8 @@ public class FeedPostResponse {
                             LocalDateTime createdAt,
                             LocalDateTime updatedAt,
                             long likesCount,
-                            long commentsCount) {
+                            long commentsCount,
+                            boolean isLiked) {
         this.feedId = feedId;
         this.content = content;
         this.accountId = accountId;
@@ -43,5 +45,6 @@ public class FeedPostResponse {
         this.updatedAt = updatedAt;
         this.likesCount = likesCount;
         this.commentsCount = commentsCount;
+        this.isLiked = isLiked;
     }
 }
