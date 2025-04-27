@@ -69,8 +69,6 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                                 feedPost.author.accountId,
                                 feedPost.author.nickname,
                                 feedPost.author.profileImageUrl,
-                                GroupBy.list(feedImage.imageUrl), // 이미지들 묶기
-                                GroupBy.list(hashtags.hashtag),   // 해시태그 묶기
                                 feedPost.createdAt,
                                 feedPost.updatedAt,
                                 JPAExpressions.select(postLike.count())
