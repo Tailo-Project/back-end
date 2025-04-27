@@ -80,6 +80,9 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
         Long total = jpaQueryFactory
                 .select(feedPost.count())
                 .from(feedPost)
+                .leftJoin(feedImage).on(feedImage.feedPost.eq(feedPost))
+                .leftJoin(feedPostHashtag).on(feedPostHashtag.feedPost.eq(feedPost))
+                .leftJoin(hashtags).on(hashtags.id.eq(feedPostHashtag.hashtags.id))
                 .leftJoin(follow).on(follow.follower.id.eq(member.getId()))
                 .where(
                         feedPost.author.id.eq(member.getId())
