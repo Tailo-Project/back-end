@@ -4,6 +4,7 @@ package com.growith.tailo.chat.room;
 import com.growith.tailo.chat.message.ChatConsumer;
 import com.growith.tailo.common.exception.ResourceNotFoundException;
 import com.growith.tailo.member.entity.Member;
+import com.growith.tailo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
@@ -11,15 +12,41 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
-    // 채팅방 생성
-//    public ChatRoom
 
+    private final ChatRoomRepository chatRoomRepository;
+    private final MemberRepository memberRepository;
 
+    // 룸을 생성하는 메서드
+    public ChatRoom getChatRoom(Member member, String accountId) {
+        Member targetMember = memberRepository.findByAccountId(accountId).orElseThrow(()-> new ResourceNotFoundException("찾는 멤버가 없습니다."));
+        // 기존에 두 멤버가 존재하는 룸이 있는지 확인
+        Optional<ChatRoom> existingRoom = chatRoomRepository.findByChatMember1AndChatMember2OrChatMember1AndChatMember2(member, targetMember, targetMember,member);
+
+        // 기존 룸이 있으면 그 룸 반환
+        if (existingRoom.isPresent()) {
+            return existingRoom.get();
+        }
+
+        // 기존 룸이 없다면 새로운 룸을 생성
+        ChatRoom chatRoom = ChatRoom.builder()
+                .roomName(createRoomName(member,targetMember))
+                .chatMember1(member)
+                .chatMember2(targetMember)
+                .build();
+
+        return chatRoomRepository.save(chatRoom);
+    }
+    // 룸 이름을 생성하는 메서드
+    private String createRoomName(Member member, Member targetMember) {
+        // 룸 이름을 유니크하고 의미 있게 만들 수 있습니다.
+        return member.getAccountId() + "," + targetMember.getAccountId();
+    }
 }
 //    추후 도입 예정
 //    private final ChatConsumer chatConsumer;

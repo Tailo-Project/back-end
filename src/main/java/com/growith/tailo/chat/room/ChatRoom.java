@@ -2,6 +2,7 @@ package com.growith.tailo.chat.room;
 
 //import com.growith.tailo.chat.member.ChatMember;
 import com.growith.tailo.chat.message.ChatMessage;
+import com.growith.tailo.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,9 +21,15 @@ public class ChatRoom {
 
     @Column(name = "room_name", nullable = false)
     private String roomName;
-//    추후 도입 예정
-//    @OneToMany(mappedBy = "chatRoom",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<ChatMember> chatMember;
+
+    @ManyToOne
+    @JoinColumn(name="chat_member_1",nullable = false)
+    private Member chatMember1;
+
+    @ManyToOne
+    @JoinColumn(name="chat_member_2",nullable = false)
+    private Member chatMember2;
+
 
     @OneToMany(mappedBy = "chatRoom",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
