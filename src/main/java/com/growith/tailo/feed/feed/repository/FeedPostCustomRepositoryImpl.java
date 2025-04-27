@@ -86,8 +86,6 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
         insertImages(feedImage, feedMap);
 
         // 해시태그 목록 가져오기
-        insertImages(feedImage, feedMap);
-        
         insertHashTags(hashtags, feedPostHashtag, feedMap);
 
         Long total = jpaQueryFactory
