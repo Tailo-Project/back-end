@@ -63,9 +63,9 @@ public class FeedPostImageServiceImpl implements FeedPostImageService {
 
     // 특정 사용자 피드 이미지 목록 조회
     @Override
-    public Page<MemberFeedImageResponse> getMemberFeedImageList(Member member, Pageable pageable, Long accountId) {
+    public Page<MemberFeedImageResponse> getMemberFeedImageList(Member member, Pageable pageable, String accountId) {
 
-        if (member == null || !memberRepository.existsByAccountId(member.getAccountId()) || !memberRepository.existsById(accountId)) {
+        if (!memberRepository.existsByAccountId(accountId)) {
             throw new ResourceNotFoundException("해당 회원이 존재하지 않습니다.");
         }
 
