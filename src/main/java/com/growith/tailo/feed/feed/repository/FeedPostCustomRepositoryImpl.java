@@ -10,6 +10,7 @@ import com.growith.tailo.feed.hashtag.entity.QHashtags;
 import com.growith.tailo.feed.likes.entity.QPostLike;
 import com.growith.tailo.follow.entity.QFollow;
 import com.growith.tailo.member.entity.Member;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
@@ -43,9 +44,6 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
 
         Map<Long, FeedPostResponse> feedMap = jpaQueryFactory
                 .from(feedPost)
-                .leftJoin(feedImage).on(feedImage.feedPost.eq(feedPost))
-                .leftJoin(feedPostHashtag).on(feedPostHashtag.feedPost.eq(feedPost))
-                .leftJoin(hashtags).on(hashtags.id.eq(feedPostHashtag.hashtags.id))
                 .leftJoin(follow).on(follow.follower.id.eq(member.getId()))
                 .where(
                         feedPost.author.id.eq(member.getId())
@@ -62,8 +60,6 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                                 feedPost.author.accountId,
                                 feedPost.author.nickname,
                                 feedPost.author.profileImageUrl,
-                                GroupBy.list(feedImage.imageUrl), // 이미지들 묶기
-                                GroupBy.list(hashtags.hashtag),   // 해시태그 묶기
                                 feedPost.createdAt,
                                 feedPost.updatedAt,
                                 JPAExpressions.select(postLike.count())
@@ -76,6 +72,10 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                 ));
 
         List<FeedPostResponse> feeds = new ArrayList<>(feedMap.values());
+
+        insertImages(feedImage, feedMap);
+
+        insertHashTags(hashtags, feedPostHashtag, feedMap);
 
         Long total = jpaQueryFactory
                 .select(feedPost.count())
@@ -91,7 +91,40 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                 )
                 .fetchOne();
 
+        log.info("offset: " + pageable.getOffset() + " limit: " + pageable.getPageSize() + " 피드 리스트 갯수 : " + feeds.size() + " 실제 count 갯수: " + total);
+
         return PageableExecutionUtils.getPage(feeds, pageable, () -> total);
+    }
+
+    private void insertHashTags(QHashtags hashtags, QFeedPostHashtag feedPostHashtag, Map<Long, FeedPostResponse> feedMap) {
+        List<Tuple> hashtagResults = jpaQueryFactory
+                .select(feedPostHashtag.feedPost.id, hashtags.hashtag)
+                .from(feedPostHashtag)
+                .leftJoin(hashtags).on(hashtags.id.eq(feedPostHashtag.hashtags.id))
+                .where(feedPostHashtag.feedPost.id.in(feedMap.keySet()))
+                .fetch();
+
+        for (Tuple hashtagResult : hashtagResults) {
+            Long feedId = hashtagResult.get(feedPostHashtag.feedPost.id);
+            String hashtag = hashtagResult.get(hashtags.hashtag);
+            FeedPostResponse feedPost = feedMap.get(feedId);
+            feedPost.getHashtags().add(hashtag);
+        }
+    }
+
+    private void insertImages(QFeedPostImage feedImage, Map<Long, FeedPostResponse> feedMap) {
+        List<Tuple> imageResults = jpaQueryFactory
+                .select(feedImage.feedPost.id, feedImage.imageUrl)
+                .from(feedImage)
+                .where(feedImage.feedPost.id.in(feedMap.keySet()))
+                .fetch();
+
+        for (Tuple imageResult : imageResults) {
+            Long feedId = imageResult.get(feedImage.feedPost.id);
+            String imageUrl = imageResult.get(feedImage.imageUrl);
+            FeedPostResponse feedPost = feedMap.get(feedId);
+            feedPost.getImageUrls().add(imageUrl);
+        }
     }
 
     @Override
