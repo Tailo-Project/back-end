@@ -42,7 +42,10 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
         QFeedPostHashtag feedPostHashtag = QFeedPostHashtag.feedPostHashtag;
         QFollow follow = QFollow.follow;
 
-        Map<Long, FeedPostResponse> feedMap = jpaQueryFactory
+        // 피드 페이징
+        List<Long> feedPostIds = jpaQueryFactory
+                .select(feedPost.id)
+                .distinct()
                 .from(feedPost)
                 .leftJoin(follow).on(follow.follower.id.eq(member.getId()))
                 .where(
@@ -50,9 +53,15 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
                                 .or(follow.follower.id.eq(member.getId())
                                         .and(follow.following.id.eq(feedPost.author.id)))
                 )
-                .orderBy(feedPost.createdAt.desc(), feedPost.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .fetch();
+
+        // 페이징한 피드 아이디를 통해 피드에 필요한 정보 조회
+        Map<Long, FeedPostResponse> feedMap = jpaQueryFactory
+                .from(feedPost)
+                .where(feedPost.id.in(feedPostIds))
+                .orderBy(feedPost.createdAt.desc(), feedPost.id.desc())
                 .transform(GroupBy.groupBy(feedPost.id).as(
                         Projections.constructor(FeedPostResponse.class,
                                 feedPost.id,
@@ -73,12 +82,14 @@ public class FeedPostCustomRepositoryImpl implements FeedPostCustomRepository {
 
         List<FeedPostResponse> feeds = new ArrayList<>(feedMap.values());
 
+        // 이미지 목록 가져오기
         insertImages(feedImage, feedMap);
 
+        // 해시태그 목록 가져오기
         insertHashTags(hashtags, feedPostHashtag, feedMap);
 
         Long total = jpaQueryFactory
-                .select(feedPost.count())
+                .select(feedPost.countDistinct())
                 .from(feedPost)
                 .leftJoin(follow).on(follow.follower.id.eq(member.getId()))
                 .where(

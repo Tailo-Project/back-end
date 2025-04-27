@@ -13,4 +13,6 @@ public interface FeedPostHashtagRepository extends JpaRepository<FeedPostHashtag
     void deleteByHashtagsAndFeedPost(Hashtags hashtags, FeedPost feedPost);
 
     List<FeedPostHashtag> findByFeedPost(FeedPost feedPost);
+
+    boolean existsByFeedPostAndHashtags(FeedPost feedPost, Hashtags hashtags);
 }
