@@ -1,12 +1,15 @@
 package com.growith.tailo.search.member.dto;
 
-import com.growith.tailo.common.dto.Pagination;
-import com.growith.tailo.search.member.docs.MemberDocument;
+import lombok.Builder;
 
-import java.util.List;
-
+@Builder
 public record MemberSearchResponse(
-        List<MemberDocument> memberDocuments,
-        Pagination pagination
+        Long id,
+        String accountId,
+        String nickname,
+        String profileImageUrl,
+        String createdAt,
+        String updatedAt,
+        boolean isFollowing
 ) {
 }
