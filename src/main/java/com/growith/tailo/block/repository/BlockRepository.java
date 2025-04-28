@@ -19,4 +19,6 @@ public interface BlockRepository extends JpaRepository<BlockMember, Long>, Block
     double countBlockMemberByBlocker(Member blocker);
 
     List<BlockMember> findByBlockerIdAndBlockedIdIn(Long id, List<Long> memberIds);
+
+    List<BlockMember> findByBlockerAccountIdAndBlockedAccountIdIn(String accountId, List<String> accountIds);
 }

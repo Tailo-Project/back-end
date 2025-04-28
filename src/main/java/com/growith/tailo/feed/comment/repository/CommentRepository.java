@@ -16,4 +16,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     boolean existsByAuthorAndFeedPostAndContentAndCreatedAtAfter(Member member, FeedPost feedPost, String content, LocalDateTime time);
 
     List<Comment> findByParentComment(Comment comment);
+
+    String countByFeedPostId(Long feedPostId);
 }

@@ -89,7 +89,7 @@ public class MemberSearchServiceImpl implements MemberSearchService {
         if (responses.isEmpty()) {
             log.info("사용자 검색 결과 없음: keyword={}", keyword);
         } else {
-            log.info("검색완료: keyword={}, 결과 수={}, 제외된 수={}", keyword, responses.size() - members.size(), responses.size());
+            log.info("검색완료: keyword={}, 결과 수={}, 제외된 수={}", keyword, responses.size(), responses.size() - members.size());
         }
 
         return new PageImpl<>(responses, pageable, searchHits.getTotalHits());
