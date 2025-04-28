@@ -2,7 +2,7 @@ spring:
   application:
     name: Tailo
   profiles:
-    active: local
+    active: dev
   servlet:
     multipart:
       enabled: true

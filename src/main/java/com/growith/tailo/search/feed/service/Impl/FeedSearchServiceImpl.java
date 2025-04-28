@@ -76,7 +76,7 @@ public class FeedSearchServiceImpl implements FeedSearchService {
                 .toList();
 
         List<String> followIds = follows.stream()
-                .map(follow -> follow.getFollower().getAccountId())
+                .map(follow -> follow.getFollowing().getAccountId())
                 .toList();
 
         // 차단한 사용자는 결과에서 제외, 팔로우 여부 표시

@@ -69,8 +69,10 @@ public class MemberSearchServiceImpl implements MemberSearchService {
                 .toList();
 
         List<Long> followIds = follows.stream()
-                .map(follow -> follow.getFollower().getId())
+                .map(follow -> follow.getFollowing().getId())
                 .toList();
+
+        log.info("?={} ", followIds.contains(member.getId()));
 
         // 차단한 사용자는 결과에서 제외, 팔로우 여부 표시
         List<MemberSearchResponse> responses = members.stream()
