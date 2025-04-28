@@ -6,6 +6,7 @@ import com.growith.tailo.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,4 +17,8 @@ public interface BlockRepository extends JpaRepository<BlockMember, Long>, Block
     Optional<BlockMember> findByBlockerAndBlocked(Member member, Member blockedMember);
 
     double countBlockMemberByBlocker(Member blocker);
+
+    List<BlockMember> findByBlockerIdAndBlockedIdIn(Long id, List<Long> memberIds);
+
+    List<BlockMember> findByBlockerAccountIdAndBlockedAccountIdIn(String accountId, List<String> accountIds);
 }

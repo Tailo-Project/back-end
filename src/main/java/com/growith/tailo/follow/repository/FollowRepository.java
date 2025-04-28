@@ -5,10 +5,11 @@ import com.growith.tailo.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface FollowRepository extends JpaRepository<Follow, Long>,FollowCustomRepository {
+public interface FollowRepository extends JpaRepository<Follow, Long>, FollowCustomRepository {
     Optional<Follow> findByFollowerAndFollowing(Member follower, Member following);
 
     boolean existsByFollowerAndFollowing(Member follower, Member following);
@@ -22,4 +23,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long>,FollowCust
     long countFollowByFollower(Member follower);
 
     long countFollowByFollowing(Member following);
+
+    List<Follow> findByFollowerIdAndFollowingIdIn(Long id, List<Long> memberIds);
+
+    List<Follow> findByFollowerAccountIdAndFollowingAccountIdIn(String accountId, List<String> accountIds);
 }

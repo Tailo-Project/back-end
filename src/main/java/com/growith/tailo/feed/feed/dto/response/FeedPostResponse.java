@@ -11,18 +11,18 @@ import java.util.List;
 @AllArgsConstructor
 public class FeedPostResponse {
 
-    private final Long feedId;
-    private final String content;
-    private final String accountId;
-    String authorNickname;
-    String authorProfile;
-    List<String> imageUrls;
-    List<String> hashtags;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
-    long likesCount;
-    long commentsCount;
-    boolean isLiked;
+    private Long feedId;
+    private String content;
+    private String accountId;
+    private String authorNickname;
+    private String authorProfile;
+    private List<String> imageUrls;
+    private List<String> hashtags;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private long likesCount;
+    private long commentsCount;
+    private boolean isLiked;
 
     public FeedPostResponse(Long feedId,
                             String content,
