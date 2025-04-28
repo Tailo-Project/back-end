@@ -19,6 +19,25 @@ spring:
     username: ${ELASTICSEARCH_USERNAME}
     password: ${ELASTICSEARCH_PASSWORD}
 
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VIRTUAL}
+
+    chat:
+      exchange: ${CHAT_EXCHANGE}
+      routing-key: ${CHAT_ROUTING}
+      queue: ${CHAT_QUEUE}
+
+    notification:
+      exchange: ${NC_EXCHANGE}
+      routing-key: ${NC_ROUTING}
+      queue: ${NC_QUEUE}
+
+
+
 ## Swagger
 springdoc:
   swagger-ui:
