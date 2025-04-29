@@ -14,70 +14,27 @@
 12. [🚨 트러블 슈팅](#-트러블-슈팅)
 
 ## 🔎 프로젝트 소개
-
 -
+
 ## 🎯 프로젝트 기간
-- 1차 MVP 개발 기간 : 2025.04.13 ~ 2025.04.27
+- 1차 MVP 개발 기간 : 2025.04.13 ~ 2025.04.30
 
 <details>
   <summary>🎇 프로젝트 실행 방법</summary>
-
-### 1️⃣ Git Clone
-  ```bash
-  git clone 
-```
-
-### 2️⃣ .env 파일 설정
-
-```
-# Docker
-MYSQL_ROOT_PASSWORD={데이터베이스 비밀번호}
-MYSQL_DATABASE={데이터베이스 이름}
-
-DB_USERNAME={데이터베이스 username}
-DB_PASSWORD={username의 비밀번호}
-
-# SMTP
-MAIL_USERNAME={SMTP 메일 송신 이메일}
-MAIL_PASSWORD={SMTP 메일 송신 비밀번호}
-
-# JWT Secret Key
-JWT_SECRET_KEY={JWT KEY값}
-
-# Encryption Secret Key
-ENCRYPTION_SECRET_KEY={암호화 KEY값}
-
-# 스프링 데이터베이스 URL
-SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/{데이터베이스 이름}?useSSL=false&allowPublicKeyRetrieval=true
-```
-
-### 3️⃣ Docker 이미지 빌드
-``` bash
-docker buildx build --platform linux/amd64 -f eureka-server/Dockerfile -t eureka-server:latest . --load
-```
-
-### 4️⃣ Docker Compose로 컨테이너 실행
-```bash
-docker-compose up --build -d
-```    
-</details>
 
 ## 🧑‍💻 팀원 소개
 
 | **이름**    | **역할**        | 
 |:-----------:|:---------------:|
-| 김민주      | 팀장 & BE       | 
 | 오예준      | BE              | 
 | 정누리      | BE              | 
-| 박지원      | FE              |
-| 정하승      | FE              | 
+| 정하승      | 팀장 & FE        | 
 
 
 ## 🧑‍💻 역할 분담
 
 | **이름**    | **역할**        | 
 |:-----------:|:---------------:|
-| 김민주      | 기능1              |
 | 오예준      | 기능2              | 
 | 정누리      | 기능3              | 
 
@@ -97,10 +54,10 @@ docker-compose up --build -d
 -
 ## ⚙️ 기술 스택
 - Backend : Java 17, Spring Boot 3.4.0, Spring Data JPA, Spring Security
-- Database : MySQL, Redis, DBeaver
+- Database : MySQL, Redis
 - Test Tool : Postman
-- DevOps : Docker, Git
-- ETC : InteliJ, Google SMTP
+- DevOps : Docker, Git, GitAction
+- ETC : InteliJ
 
 ## 📃 API 설계서
 -
