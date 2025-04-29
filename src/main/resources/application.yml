@@ -2,7 +2,7 @@ spring:
   application:
     name: Tailo
   profiles:
-    active: dev
+    active: local
   servlet:
     multipart:
       enabled: true
@@ -30,8 +30,8 @@ spring:
 
     chat:
       exchange: ${CHAT_EXCHANGE}
-      routing-key: ${CHAT_ROUTING}
       queue: ${CHAT_QUEUE}
+      routing-key: ${CHAT_ROUTING}
 
     notification:
       exchange: ${NC_EXCHANGE}

@@ -27,7 +27,6 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.chat.exchange}")
     private String chatExchange;
 
-
     @Value("${spring.rabbitmq.notification.exchange}")
     private String notificationExchange;
     @Value("${spring.rabbitmq.notification.routing-key}")

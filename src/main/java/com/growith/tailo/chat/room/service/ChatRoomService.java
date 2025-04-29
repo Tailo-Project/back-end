@@ -1,10 +1,8 @@
 package com.growith.tailo.chat.room.service;
 
-//import com.growith.tailo.chat.member.entity.ChatMember;
 import com.growith.tailo.chat.member.entity.ChatMember;
 import com.growith.tailo.chat.member.repository.ChatMemberRepository;
 import com.growith.tailo.chat.room.component.QueueManager;
-import com.growith.tailo.chat.room.dto.response.ChatRoomListResponse;
 import com.growith.tailo.chat.room.dto.response.ChatRoomResponse;
 import com.growith.tailo.chat.room.dto.response.ChatRoomSimpleResponse;
 import com.growith.tailo.chat.room.entity.ChatRoom;
@@ -31,6 +29,7 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final QueueManager queueManager;
     private final ChatMemberRepository chatMemberRepository;
+
     private static final String NOT_FOUND_MEMBER = "해당 멤버를 찾을 수 없습니다.";
     // 해당 채팅방 조회
     public ChatRoomResponse getRoom(Member member, Long roomId) {

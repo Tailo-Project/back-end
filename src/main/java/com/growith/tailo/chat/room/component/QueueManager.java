@@ -21,6 +21,7 @@ public class QueueManager {
     private final TopicExchange chatExchange;
     private final RabbitTemplate rabbitTemplate;
     private final ChatConsumer chatConsumer;
+
     @Value("${spring.rabbitmq.chat.routing-key}")
     private String routingKey;
 
