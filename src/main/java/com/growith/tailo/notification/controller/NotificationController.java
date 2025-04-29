@@ -91,8 +91,7 @@ public class NotificationController {
             })
     @PatchMapping("/{NotificationId}/read")
     public ResponseEntity<ApiResponse<String>> readNotification(
-            @PathVariable("NotificationId") Long NotificationId,
-            @AuthenticationPrincipal Member member) {
+            @PathVariable("NotificationId") Long NotificationId) {
         String result = notificationService.markNotification(NotificationId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponses.success(result));
     }
