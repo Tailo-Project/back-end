@@ -88,6 +88,7 @@ public class MemberService {
 
         Member signUpMember = ToMemberMapper.signUpToEntity(signUpRequest, imageUrl);
         memberRepository.save(signUpMember);
+
         String accessToken = jwtUtil.generateAccessToken(signUpMember);
         String refreshToken = jwtUtil.generateRefreshToken(signUpMember);
         String email = signUpMember.getEmail();
@@ -151,6 +152,7 @@ public class MemberService {
 
         return FromMemberMapper.fromMemberDetail(member);
     }
+
     public MemberDetailResponse getDetail(Member member){
         if (member==null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

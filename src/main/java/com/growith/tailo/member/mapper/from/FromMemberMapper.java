@@ -42,6 +42,7 @@ public class FromMemberMapper {
                 .countFollowing(countFollowing)
                 .profileImageUrl(member.getProfileImageUrl())
                 .isFollow(false)
+                .isBlock(false)
                 .build();
     }
 
