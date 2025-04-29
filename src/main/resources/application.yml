@@ -19,6 +19,12 @@ spring:
     username: ${ELASTICSEARCH_USERNAME}
     password: ${ELASTICSEARCH_PASSWORD}
 
+  elasticsearch:
+    host: ${ELASTICSEARCH_HOST}
+    username: ${ELASTICSEARCH_USERNAME}
+    password: ${ELASTICSEARCH_PASSWORD}
+
+
   rabbitmq:
     host: ${RABBIT_HOST}
     port: ${RABBIT_PORT}
@@ -28,8 +34,8 @@ spring:
 
     chat:
       exchange: ${CHAT_EXCHANGE}
-      routing-key: ${CHAT_ROUTING}
       queue: ${CHAT_QUEUE}
+      routing-key: ${CHAT_ROUTING}
 
     notification:
       exchange: ${NC_EXCHANGE}
