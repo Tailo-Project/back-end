@@ -1,20 +1,15 @@
 package com.growith.tailo.chat.room.repository;
 
 import com.growith.tailo.chat.member.entity.QChatMember;
-import com.growith.tailo.chat.room.dto.response.ChatRoomResponse;
 import com.growith.tailo.chat.room.dto.response.ChatRoomSimpleResponse;
 import com.growith.tailo.chat.room.entity.ChatRoom;
 import com.growith.tailo.chat.room.entity.QChatRoom;
 import com.growith.tailo.member.entity.Member;
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;

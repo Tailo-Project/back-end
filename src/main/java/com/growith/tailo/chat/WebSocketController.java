@@ -15,7 +15,6 @@ public class WebSocketController {
     private final ChatPublisher chatPublisher;
 
     @MessageMapping("/chat")
-    @Operation(summary = "채팅 메시지 전송", description = "웹소켓을 통해 채팅 메시지를 전송합니다.")
     public void sendMessage(@Payload ChatMessageRequest chatMessage) {
         chatPublisher.send(chatMessage);
     }
