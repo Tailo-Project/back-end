@@ -26,10 +26,7 @@ public class RabbitMQConfig {
 
     @Value("${spring.rabbitmq.chat.exchange}")
     private String chatExchange;
-    @Value("${spring.rabbitmq.chat.routing-key}")
-    private String chatRouting;
-    @Value("${spring.rabbitmq.chat.queue}")
-    private String chatQueue;
+
 
     @Value("${spring.rabbitmq.notification.exchange}")
     private String notificationExchange;
@@ -38,35 +35,23 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.notification.queue}")
     private String notificationQueue;
 
-    // 공통 메서드로 Exchange, Queue, Binding 설정
     private TopicExchange createTopicExchange(String exchangeName) {
         return new TopicExchange(exchangeName);
     }
-
     private Queue createQueue(String queueName) {
         return new Queue(queueName);
     }
 
-    private Binding createBinding(Queue queue, TopicExchange exchange, String routingKey) {
+    private Binding createTopicBinding(Queue queue, TopicExchange exchange, String routingKey){
         return BindingBuilder.bind(queue)
                 .to(exchange)
-                .with(routingKey + "*");
+                .with(routingKey+"*");
     }
 
     // 채팅 관련 Bean 설정
     @Bean
     public TopicExchange chatExchange() {
         return createTopicExchange(chatExchange);
-    }
-
-    @Bean
-    public Queue chatQueue() {
-        return createQueue(chatQueue);
-    }
-
-    @Bean
-    public Binding chatBinding() {
-        return createBinding(chatQueue(), chatExchange(), chatRouting);
     }
 
     // 알림 관련 Bean 설정
@@ -82,7 +67,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding notifyBinding() {
-        return createBinding(notifyQueue(), notifyExchange(), notificationRouting);
+        return createTopicBinding(notifyQueue(), notifyExchange(), notificationRouting);
     }
 
     // admin
