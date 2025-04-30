@@ -1,6 +1,7 @@
 package com.growith.tailo.chat.room.component;
 
 import com.growith.tailo.chat.message.component.ChatConsumer;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;
@@ -27,6 +28,7 @@ public class QueueManager {
     @Value("${spring.rabbitmq.chat.queue}")
     private String queueName;
 
+    @Autowired
     public QueueManager(AmqpAdmin amqpAdmin,
                         @Qualifier("chatExchange") TopicExchange chatExchange,
                         RabbitTemplate rabbitTemplate,
@@ -41,6 +43,9 @@ public class QueueManager {
     public void createChatQueue(Long roomId) {
         String dynamicQueueName = queueName + roomId;
         log.info("{} 큐 존재 여부 : {}", dynamicQueueName, !existQueue(dynamicQueueName));
+
+
+
         // 큐가 이미 존재하는지 확인
         if (!existQueue(dynamicQueueName)) {
             // 큐 이름을 동적으로 생성
@@ -60,7 +65,8 @@ public class QueueManager {
         }
     }
 
-    public void deleteQueue(String queueName) {
+
+    public void deleteQueue(String queueName){
         amqpAdmin.deleteQueue(queueName);
     }
 
