@@ -10,8 +10,9 @@ import com.growith.tailo.feed.feed.entity.FeedPost;
 import com.growith.tailo.feed.feed.repository.FeedPostRepository;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
+import com.growith.tailo.notification.component.NotificationProducer;
+import com.growith.tailo.notification.dto.NotificationMessage;
 import com.growith.tailo.notification.enums.NotificationType;
-import com.growith.tailo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final FeedPostRepository feedPostRepository;
-    private final NotificationService notificationService;
+    private final NotificationProducer notificationProducer;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -71,9 +72,17 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRequest.toEntity(feedPost, member, parentComment, commentRequest.content());
         commentRepository.save(comment);
 
-        // TODO : MQ 도입 시 비동기로 변경 예정
+        // MQ 도입
         String notificationUrl = String.format("%s/api/feed/%s", baseUrl, feedId);
-        notificationService.send(feedPost.getAuthor(), member, NotificationType.COMMENT, notificationUrl);
+
+        NotificationMessage message = NotificationMessage.builder()
+                .receiverId(feedPost.getAuthor().getId())
+                .senderId(member.getId())
+                .type(NotificationType.COMMENT)
+                .url(notificationUrl)
+                .build();
+
+        notificationProducer.sendNotification(message);
 
         return "댓글 등록 성공";
     }

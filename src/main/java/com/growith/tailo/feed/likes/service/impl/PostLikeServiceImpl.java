@@ -9,8 +9,9 @@ import com.growith.tailo.feed.likes.repository.PostLikeRepository;
 import com.growith.tailo.feed.likes.service.PostLikeService;
 import com.growith.tailo.member.entity.Member;
 import com.growith.tailo.member.repository.MemberRepository;
+import com.growith.tailo.notification.component.NotificationProducer;
+import com.growith.tailo.notification.dto.NotificationMessage;
 import com.growith.tailo.notification.enums.NotificationType;
-import com.growith.tailo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -30,7 +31,7 @@ public class PostLikeServiceImpl implements PostLikeService {
     private final MemberRepository memberRepository;
     private final FeedPostRepository feedPostRepository;
     private final PostLikeRepository postLikeRepository;
-    private final NotificationService notificationService;
+    private final NotificationProducer notificationProducer;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -70,9 +71,17 @@ public class PostLikeServiceImpl implements PostLikeService {
 
                 postLikeRepository.save(postLike);
 
-                // TODO : MQ 도입 시 비동기로 변경 예정
+                // MQ 도입
                 String notificationUrl = String.format("%s/api/feed/%s", baseUrl, feedId);
-                notificationService.send(feedPost.getAuthor(), member, NotificationType.LIKE, notificationUrl);
+
+                NotificationMessage message = NotificationMessage.builder()
+                        .receiverId(feedPost.getAuthor().getId())
+                        .senderId(member.getId())
+                        .type(NotificationType.LIKE)
+                        .url(notificationUrl)
+                        .build();
+
+                notificationProducer.sendNotification(message);
 
                 return "좋아요 성공";
             }
