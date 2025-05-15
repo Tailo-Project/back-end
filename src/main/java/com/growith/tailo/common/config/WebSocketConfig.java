@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("http://localhost:5173", "https://taillo-ten.vercel.app").withSockJS();
         /*
          * withSockJS()
          * 는 웹소켓을 지원하지 않는 브라우저에
