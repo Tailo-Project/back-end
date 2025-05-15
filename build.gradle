@@ -76,12 +76,6 @@ dependencies {
     implementation 'org.json:json:20210307'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.1.2'
 
-    //Querydsl
-    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
     //WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
